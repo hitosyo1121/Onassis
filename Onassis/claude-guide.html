@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claudeの主要機能 解説＆習熟度チェック</title>
+<style>
+  :root {
+    --blue: #2563EB;
+    --navy: #1E3A8A;
+    --bg: #F1F5F9;
+    --line: #CBD5E1;
+    --text: #1E293B;
+    --sub: #64748B;
+    --white: #FFFFFF;
+    --blue-soft: #EFF6FF;
+    --green: #059669;
+    --red: #DC2626;
+    --yellow: #D97706;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic UI", "Meiryo", -apple-system, "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1.8;
+  }
+
+  /* ===== HEADER ===== */
+  header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+    color: #fff;
+    padding: 60px 24px 48px;
+    text-align: center;
+  }
+  header h1 { font-size: 36px; font-weight: 800; margin-bottom: 12px; }
+  header p { font-size: 17px; opacity: .9; max-width: 700px; margin: 0 auto 24px; }
+  .header-badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+  .header-badges span {
+    background: rgba(255,255,255,.15);
+    border: 1px solid rgba(255,255,255,.4);
+    border-radius: 999px;
+    padding: 6px 20px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  /* ===== NAV ===== */
+  nav.page-nav {
+    background: var(--white);
+    border-bottom: 2px solid var(--blue);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(30,58,138,.08);
+  }
+  nav.page-nav ul {
+    display: flex;
+    list-style: none;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 16px;
+    overflow-x: auto;
+  }
+  nav.page-nav ul li a {
+    display: block;
+    padding: 14px 18px;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--sub);
+    text-decoration: none;
+    white-space: nowrap;
+    border-bottom: 3px solid transparent;
+    transition: color .2s, border-color .2s;
+  }
+  nav.page-nav ul li a:hover { color: var(--blue); border-bottom-color: var(--blue); }
+
+  /* ===== CONTENT ===== */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+  section.section { padding: 60px 0 40px; }
+  section.section + section.section { border-top: 1px solid var(--line); }
+
+  .eyebrow {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .14em;
+    color: var(--blue);
+    background: var(--blue-soft);
+    border: 1px solid var(--blue);
+    border-radius: 999px;
+    padding: 3px 14px;
+    margin-bottom: 14px;
+  }
+  h2.sec-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--navy);
+    border-left: 6px solid var(--blue);
+    padding-left: 18px;
+    margin-bottom: 10px;
+  }
+  .sec-lead { color: var(--sub); font-size: 15px; margin-bottom: 32px; }
+
+  /* ===== FEATURE CARDS ===== */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+  .feature-card {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 28px 28px 24px;
+    border-top: 5px solid var(--blue);
+    box-shadow: 0 2px 8px rgba(30,58,138,.06);
+  }
+  .feature-card .fc-icon { font-size: 32px; margin-bottom: 12px; }
+  .feature-card h3 {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+  .feature-card .fc-tag {
+    display: inline-block;
+    background: var(--blue-soft);
+    color: var(--blue);
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 4px;
+    padding: 2px 10px;
+    margin-bottom: 14px;
+  }
+  .feature-card p { font-size: 14.5px; color: var(--text); margin-bottom: 12px; }
+  .feature-card ul { padding-left: 20px; font-size: 14px; color: var(--text); }
+  .feature-card ul li { margin-bottom: 5px; }
+  .feature-card .cant-list { color: var(--sub); }
+
+  /* ===== COMPARISON TABLE ===== */
+  .table-wrap { overflow-x: auto; margin-bottom: 32px; }
+  table.cmp {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    min-width: 700px;
+  }
+  .cmp th, .cmp td {
+    border: 1px solid var(--line);
+    padding: 12px 14px;
+    text-align: left;
+    vertical-align: top;
+  }
+  .cmp thead th {
+    background: var(--navy);
+    color: #fff;
+    text-align: center;
+    font-size: 15px;
+  }
+  .cmp thead th:first-child { background: #fff; }
+  .cmp tbody th {
+    background: var(--blue-soft);
+    color: var(--navy);
+    width: 140px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+  .cmp tbody tr:nth-child(even) td { background: #F8FAFC; }
+  .pill {
+    display: inline-block;
+    background: #E0E7FF;
+    color: var(--navy);
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 4px;
+    padding: 1px 8px;
+    margin: 1px 2px;
+  }
+
+  /* ===== FLOW ===== */
+  .flow-steps {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 0;
+    margin-bottom: 32px;
+  }
+  .flow-step {
+    flex: 1;
+    min-width: 180px;
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 20px 18px;
+    position: relative;
+  }
+  .flow-step + .flow-step { margin-left: 12px; }
+  .flow-step::before {
+    content: "→";
+    position: absolute;
+    left: -16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--blue);
+    font-size: 22px;
+    font-weight: 800;
+  }
+  .flow-step:first-child::before { display: none; }
+  .flow-step b { display: block; color: var(--blue); font-size: 13px; margin-bottom: 6px; font-weight: 700; }
+
+  /* ===== TIPS BOX ===== */
+  .tips-box {
+    background: var(--blue-soft);
+    border: 1px solid var(--blue);
+    border-radius: 12px;
+    padding: 22px 28px;
+    margin-top: 24px;
+  }
+  .tips-box h4 { color: var(--navy); font-size: 16px; margin-bottom: 12px; }
+  .tips-box ul { padding-left: 20px; font-size: 14.5px; }
+  .tips-box ul li { margin-bottom: 8px; }
+
+  /* ===== QUIZ ===== */
+  #quiz-section {
+    background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 100%);
+    padding: 60px 0 80px;
+  }
+  #quiz-section h2.sec-title { color: #fff; border-left-color: #60A5FA; }
+  #quiz-section .sec-lead { color: #94A3B8; }
+
+  .quiz-progress {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .quiz-progress-bar {
+    flex: 1;
+    height: 6px;
+    background: rgba(255,255,255,.15);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .quiz-progress-fill {
+    height: 100%;
+    background: #60A5FA;
+    border-radius: 999px;
+    transition: width .4s ease;
+  }
+  .quiz-progress-text { color: #94A3B8; font-size: 14px; white-space: nowrap; }
+
+  .quiz-card {
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 16px;
+    padding: 36px 40px;
+    display: none;
+  }
+  .quiz-card.active { display: block; }
+
+  .quiz-num {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    color: #60A5FA;
+    margin-bottom: 12px;
+  }
+  .quiz-q {
+    font-size: 19px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 28px;
+    line-height: 1.65;
+  }
+
+  .quiz-options { display: flex; flex-direction: column; gap: 12px; }
+  .quiz-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: rgba(255,255,255,.07);
+    border: 2px solid rgba(255,255,255,.12);
+    border-radius: 10px;
+    padding: 16px 20px;
+    cursor: pointer;
+    transition: border-color .2s, background .2s;
+    text-align: left;
+    font-family: inherit;
+    color: #E2E8F0;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .quiz-option:hover:not(:disabled) {
+    border-color: #60A5FA;
+    background: rgba(96,165,250,.1);
+  }
+  .quiz-option .opt-label {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 13px;
+    margin-top: 1px;
+  }
+  .quiz-option.correct {
+    border-color: #34D399;
+    background: rgba(52,211,153,.12);
+  }
+  .quiz-option.correct .opt-label { background: #34D399; color: #0F172A; }
+  .quiz-option.wrong {
+    border-color: #F87171;
+    background: rgba(248,113,113,.1);
+  }
+  .quiz-option.wrong .opt-label { background: #F87171; color: #fff; }
+  .quiz-option.reveal-correct {
+    border-color: #34D399;
+    background: rgba(52,211,153,.08);
+    opacity: .7;
+  }
+  .quiz-option:disabled { cursor: default; }
+
+  .quiz-feedback {
+    margin-top: 20px;
+    padding: 16px 20px;
+    border-radius: 10px;
+    font-size: 15px;
+    display: none;
+    line-height: 1.7;
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.correct-fb { background: rgba(52,211,153,.15); border: 1px solid #34D399; color: #6EE7B7; }
+  .quiz-feedback.wrong-fb { background: rgba(248,113,113,.12); border: 1px solid #F87171; color: #FCA5A5; }
+  .quiz-feedback b { color: #fff; }
+
+  .quiz-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
+  }
+  .quiz-btn {
+    background: #2563EB;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 28px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background .2s;
+  }
+  .quiz-btn:hover { background: #1D4ED8; }
+  .quiz-btn:disabled { background: rgba(255,255,255,.1); color: #64748B; cursor: default; }
+  .quiz-btn.secondary {
+    background: rgba(255,255,255,.08);
+    color: #94A3B8;
+  }
+  .quiz-btn.secondary:hover { background: rgba(255,255,255,.14); color: #fff; }
+
+  /* ===== RESULT ===== */
+  .quiz-result {
+    text-align: center;
+    padding: 20px;
+    display: none;
+  }
+  .quiz-result.show { display: block; }
+  .result-score {
+    font-size: 72px;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .result-label { font-size: 20px; color: #94A3B8; margin-bottom: 32px; }
+  .result-msg {
+    font-size: 18px;
+    font-weight: 700;
+    color: #E2E8F0;
+    max-width: 600px;
+    margin: 0 auto 32px;
+    line-height: 1.7;
+  }
+  .result-bars { max-width: 500px; margin: 0 auto 32px; text-align: left; }
+  .result-bar-item { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .result-bar-item span:first-child { width: 120px; font-size: 13px; color: #94A3B8; flex-shrink: 0; }
+  .result-bar-track {
+    flex: 1;
+    height: 8px;
+    background: rgba(255,255,255,.1);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .result-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #2563EB, #60A5FA);
+    border-radius: 999px;
+    transition: width 1s ease .3s;
+  }
+  .result-bar-item span:last-child { font-size: 13px; color: #60A5FA; font-weight: 700; width: 40px; text-align: right; }
+
+  .retry-btn {
+    background: linear-gradient(90deg, #2563EB, #3B82F6);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 16px 40px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: opacity .2s;
+    margin: 0 8px;
+  }
+  .retry-btn:hover { opacity: .88; }
+  .retry-btn.ghost {
+    background: rgba(255,255,255,.08);
+    color: #94A3B8;
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    background: #0F172A;
+    color: #475569;
+    text-align: center;
+    padding: 32px 20px;
+    font-size: 13px;
+  }
+  footer a { color: #60A5FA; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    header h1 { font-size: 26px; }
+    h2.sec-title { font-size: 22px; }
+    .feature-grid { grid-template-columns: 1fr; }
+    .quiz-card { padding: 24px 20px; }
+    .quiz-q { font-size: 16px; }
+    .flow-steps { flex-direction: column; }
+    .flow-step + .flow-step { margin-left: 0; margin-top: 8px; }
+    .flow-step::before { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header>
+  <h1>Claudeの主要機能 解説ガイド</h1>
+  <p>Project / Artifacts / Cowork / Claude Code の違いと使い分けを学び、4択クイズで理解度を確かめよう。</p>
+  <div class="header-badges">
+    <span>📁 Project</span>
+    <span>🧩 Artifacts</span>
+    <span>🛠 Cowork</span>
+    <span>⌨ Claude Code</span>
+  </div>
+</header>
+
+<!-- ===== PAGE NAV ===== -->
+<nav class="page-nav">
+  <ul>
+    <li><a href="#overview">概要・比較</a></li>
+    <li><a href="#project">Project</a></li>
+    <li><a href="#artifacts">Artifacts</a></li>
+    <li><a href="#cowork">Cowork</a></li>
+    <li><a href="#code">Claude Code</a></li>
+    <li><a href="#quiz-section">📝 習熟度クイズ</a></li>
+  </ul>
+</nav>
+
+<!-- ===== OVERVIEW ===== -->
+<section class="section" id="overview">
+  <div class="container">
+    <span class="eyebrow">OVERVIEW</span>
+    <h2 class="sec-title">4機能の一言まとめ</h2>
+    <p class="sec-lead">まず「何ができる機能なのか」を1行で把握する。詳細は各機能の解説セクションで確認しよう。</p>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="fc-icon">📁</div>
+        <h3>Project</h3>
+        <span class="fc-tag">資料と指示を覚える専用作業部屋</span>
+        <p>同じ資料・前提で繰り返し会話するための機能。ナレッジ（参照ファイル）とカスタム指示を一度設定すれば、毎回の説明が不要になる。</p>
+        <p><strong>誰向け：</strong>全ユーザー（非エンジニア含む）</p>
+      </div>
+      <div class="feature-card">
+        <div class="fc-icon">🧩</div>
+        <h3>Artifacts</h3>
+        <span class="fc-tag">会話から生まれる共有できる成果物</span>
+        <p>チャットで依頼した文書・コード・図・WebアプリをチャットサイドのウィンドウにArtifactとして生成。会話で反復編集し、URLで公開・共有できる。</p>
+        <p><strong>誰向け：</strong>全ユーザー（コード不要でアプリも作れる）</p>
+      </div>
+      <div class="feature-card">
+        <div class="fc-icon">🛠</div>
+        <h3>Cowork</h3>
+        <span class="fc-tag">PC作業を任せるデスクトップ代理人</span>
+        <p>ローカルファイルの整理・変換、Excel/PPT作成、複数ステップ作業の自動実行など「作業」を丸ごと委任する機能。デスクトップアプリ必須。</p>
+        <p><strong>誰向け：</strong>非エンジニアのナレッジワーカー中心</p>
+      </div>
+      <div class="feature-card">
+        <div class="fc-icon">⌨</div>
+        <h3>Claude Code</h3>
+        <span class="fc-tag">コードを書き直す開発エージェント</span>
+        <p>ターミナル上でリポジトリを直接読み書きする開発エージェント。機能実装・バグ修正・テスト作成・Git操作まで自律的に実行する。</p>
+        <p><strong>誰向け：</strong>エンジニア・開発者（ターミナル操作が前提）</p>
+      </div>
+    </div>
+
+    <!-- 比較表 -->
+    <h3 style="font-size:20px;font-weight:700;color:var(--navy);margin-bottom:16px;">機能比較表</h3>
+    <div class="table-wrap">
+      <table class="cmp">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Project</th>
+            <th>Artifacts</th>
+            <th>Cowork</th>
+            <th>Claude Code</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>主な用途</th>
+            <td>同じ資料・前提での反復会話、知識の整理・共有</td>
+            <td>文書・図・Webアプリの作成と反復編集・公開</td>
+            <td>ローカルファイル操作、複数ステップ作業の自動実行</td>
+            <td>機能実装、バグ修正、リファクタリング、Git操作</td>
+          </tr>
+          <tr>
+            <th>動作環境</th>
+            <td>ブラウザ・モバイル・デスクトップ<br><span class="pill">全プラン</span></td>
+            <td>ブラウザ・モバイル・デスクトップ<br><span class="pill">全プラン</span></td>
+            <td><span class="pill">デスクトップアプリ必須</span><br><span class="pill">有料プランのみ</span></td>
+            <td><span class="pill">ターミナル</span>が基本<br><span class="pill">有料プランまたはAPI</span></td>
+          </tr>
+          <tr>
+            <th>成果物</th>
+            <td>整理された会話＋蓄積知識</td>
+            <td>文書・コード・図・アプリ（URL公開可）</td>
+            <td>ローカルPCの実ファイル（Excel・フォルダ等）</td>
+            <td>コード変更・コミット・PR</td>
+          </tr>
+          <tr>
+            <th>注意点</th>
+            <td>PCフォルダを直接読まない（手動アップロード必要）</td>
+            <td>ローカルPCにファイルを書き込まない</td>
+            <td>PC/アプリを起動したままにする必要あり</td>
+            <td>Git管理下で使うことを強く推奨</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 判断フロー -->
+    <h3 style="font-size:20px;font-weight:700;color:var(--navy);margin:32px 0 16px;">どれを使うか迷ったら → 3つの質問</h3>
+    <div class="flow-steps">
+      <div class="flow-step">
+        <b>Q1</b>
+        コードを書く・直すのが目的？<br>
+        <strong>YES → Claude Code</strong>
+      </div>
+      <div class="flow-step">
+        <b>Q2</b>
+        PC上のファイル操作や複数ステップの実作業を任せたい？<br>
+        <strong>YES → Cowork</strong>
+      </div>
+      <div class="flow-step">
+        <b>Q3</b>
+        同じ資料・指示で何度も会話を繰り返す？<br>
+        <strong>YES → Project</strong>
+      </div>
+      <div class="flow-step">
+        <b>Q4</b>
+        編集・共有できる単体の成果物が欲しい？<br>
+        <strong>YES → Artifacts</strong>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROJECT ===== -->
+<section class="section" id="project">
+  <div class="container">
+    <span class="eyebrow">FEATURE 1</span>
+    <h2 class="sec-title">📁 Project — 資料と指示を覚えさせる</h2>
+    <p class="sec-lead">毎回同じ資料を添付・説明し直す手間をなくす機能。一度設定すれば以後のチャット品質を自動で底上げする。</p>
+
+    <h3 style="font-size:18px;font-weight:700;color:var(--navy);margin-bottom:14px;">できること</h3>
+    <ul style="padding-left:22px;margin-bottom:24px;font-size:15px;">
+      <li style="margin-bottom:8px;">PDFやテキストファイルをナレッジとしてアップロードし、常時参照させる</li>
+      <li style="margin-bottom:8px;">カスタム指示でプロジェクト内の全チャットに口調・役割・出力形式を固定</li>
+      <li style="margin-bottom:8px;">チャットをプロジェクト単位で整理・管理</li>
+      <li style="margin-bottom:8px;">Team/Enterpriseプランでは部署全員とプロジェクトを共有</li>
+      <li style="margin-bottom:8px;">有料プランではナレッジが上限に近づくとRAG（必要箇所だけ参照）が自動有効化され、容量が最大約10倍に拡張</li>
+    </ul>
+
+    <h3 style="font-size:18px;font-weight:700;color:var(--navy);margin-bottom:14px;">作成方法（3ステップ）</h3>
+    <ol style="padding-left:22px;font-size:15px;margin-bottom:24px;">
+      <li style="margin-bottom:10px;"><strong>サイドバー「プロジェクト」→「新規プロジェクト」</strong>をクリック</li>
+      <li style="margin-bottom:10px;"><strong>名前を付けて作成</strong>（例：「2026年度 採用業務」）</li>
+      <li style="margin-bottom:10px;"><strong>ナレッジにファイルをアップロード</strong>し、<strong>指示欄に共通ルール</strong>を記載（例：「必ずナレッジの該当箇所を根拠として示す」）</li>
+    </ol>
+
+    <div class="tips-box">
+      <h4>💡 コツと注意点</h4>
+      <ul>
+        <li>ナレッジは「関係資料を全部入れる」より、ブランドガイド・要件・FAQ など5〜6点に絞る方が回答精度が安定しやすい</li>
+        <li>ナレッジは自動更新されない。資料改訂のたびに差し替える運用ルールを決めておく</li>
+        <li>Project は <strong>PCフォルダを直接読まない</strong>。ファイルは手動アップロードが必要（ファイル操作はCoworkの領分）</li>
+        <li>Team/Enterpriseプランでない場合は原則自分専用（他のメンバーとの共有不可）</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ARTIFACTS ===== -->
+<section class="section" id="artifacts">
+  <div class="container">
+    <span class="eyebrow">FEATURE 2</span>
+    <h2 class="sec-title">🧩 Artifacts — 会話の結果を「配れる形」にする</h2>
+    <p class="sec-lead">一定以上の分量の文書・コード・図・WebアプリをチャットサイドのウィンドウにArtifactとして表示。会話で繰り返し編集し、URLで公開できる。</p>
+
+    <h3 style="font-size:18px;font-weight:700;color:var(--navy);margin-bottom:14px;">生成できるコンテンツタイプ</h3>
+    <ul style="padding-left:22px;margin-bottom:24px;font-size:15px;">
+      <li style="margin-bottom:8px;">文書（Markdown・構造化テキスト）</li>
+      <li style="margin-bottom:8px;">コード（各種言語）</li>
+      <li style="margin-bottom:8px;">HTML/Reactアプリ（ブラウザ上で動くWebアプリ）</li>
+      <li style="margin-bottom:8px;">SVGグラフィック・Mermaidダイアグラム</li>
+    </ul>
+
+    <h3 style="font-size:18px;font-weight:700;color:var(--navy);margin-bottom:14px;">作成・公開・カスタマイズ（3ステップ）</h3>
+    <ol style="padding-left:22px;font-size:15px;margin-bottom:24px;">
+      <li style="margin-bottom:10px;"><strong>チャットで依頼するだけ</strong>：「手順書をHTMLのArtifactで作って」と指示すると自動的に右側ウィンドウに生成される</li>
+      <li style="margin-bottom:10px;"><strong>会話で反復編集</strong>：「3章を箇条書きに」「ボタンを青に変えて」など指示のたびにArtifactが更新される。バージョンを切り替えて比較も可能</li>
+      <li style="margin-bottom:10px;"><strong>公開（Publish）・共有（Share）</strong>：Artifactウィンドウ上部の「公開」ボタンでURLを発行。他者の公開ArtifactはCustomizeボタンで自分のコピーを作れる</li>
+    </ol>
+
+    <div class="tips-box">
+      <h4>💡 コツと注意点</h4>
+      <ul>
+        <li><strong>短い回答はArtifactにならない</strong>。単体で意味を持つ、ある程度の分量が必要。明示的に「Artifactとして作って」と伝えると確実</li>
+        <li><strong>公開するとコードも見える状態になる</strong>。機密情報を含む版を公開しない</li>
+        <li>他者がCustomizeしても元のArtifactは変更されない（相手側にコピーが作られるだけ）</li>
+        <li>エラーが出たら「Try fixing with Claude」ボタンでエラー内容を渡して修正を試せる</li>
+        <li>Artifactはローカルファイルには書き込まない（ブラウザ上の表示＋ダウンロードのみ）</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===== COWORK ===== -->
+<section class="section" id="cowork">
+  <div class="container">
+    <span class="eyebrow">FEATURE 3</span>
+    <h2 class="sec-title">🛠 Cowork — PC作業を「丸ごと任せる」</h2>
+    <p class="sec-lead">Claude Codeと同じエージェント基盤をGUI化した機能。「相談」ではなく「作業」を委任し、完成したファイルを受け取る使い方が基本。</p>
+
+    <h3 style="font-size:18px;font-weight:700;color:var(--navy);margin-bottom:14px;">主な用途</h3>
+    <ul style="padding-left:22px;margin-bottom:24px;font-size:15px;">
+      <li style="margin-bottom:8px;">ローカルファイルの直接読み書き（手動アップロード不要）</li>
+      <li style="margin-bottom:8px;">複数ステップ作業の分解・並列実行（領収書OCR→集計→Excel化など）</li>
+      <li style="margin-bottom:8px;"><code>/schedule</code> による定期タスク（例：毎週金曜に週次報告を自動生成）</li>
+      <li style="margin-bottom:8px;">Coworkプロジェクト：ファイル・指示・メモリをワークスペースに整理（ローカル保存）</li>
+    </ul>
+
+    <h3 style="font-size:18px;font-weight:700;color:var(--navy);margin-bottom:14px;">前提条件</h3>
+    <ul style="padding-left:22px;margin-bottom:24px;font-size:15px;">
+      <li style="margin-bottom:8px;"><strong>Claude Desktop（最新版）が必須</strong>（macOS / Windows）。Web・モバイル単体では動かない</li>
+      <li style="margin-bottom:8px;"><strong>有料プランが必須</strong>（Pro / Max / Team / Enterprise）</li>
+      <li style="margin-bottom:8px;">作業中はアプリを開いたままにする必要あり（PC睡眠で停止）</li>
+    </ul>
+
+    <div class="tips-box">
+      <h4>💡 コツと注意点</h4>
+      <ul>
+        <li><strong>アクセス権は最小限に</strong>。タスクに必要なフォルダだけを渡す。機密ファイルを含むフォルダの付与は避ける</li>
+        <li><strong>最初は「テスト用フォルダ」で試す</strong>。実ファイルを変更できる機能のため、初回はコピーしたデータで挙動を掴む</li>
+        <li>使用量（トークン消費）が通常チャットより大きい。単純な質問はChat側で行う</li>
+        <li>Coworkのプロジェクト機能はチャットのProjectとは別物（ローカル保存・別管理）</li>
+        <li>削除操作は許可プロンプトが出る。対象を確認してから承認する</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CLAUDE CODE ===== -->
+<section class="section" id="code">
+  <div class="container">
+    <span class="eyebrow">FEATURE 4</span>
+    <h2 class="sec-title">⌨ Claude Code — コードはリポジトリごと任せる</h2>
+    <p class="sec-lead">ターミナル上でリポジトリを直接読み書きする開発エージェント。コードを「提案する」だけでなく、実際に「手を動かして」ファイルを書き換える。</p>
+
+    <h3 style="font-size:18px;font-weight:700;color:var(--navy);margin-bottom:14px;">できること</h3>
+    <ul style="padding-left:22px;margin-bottom:24px;font-size:15px;">
+      <li style="margin-bottom:8px;">説明文からの機能実装・バグ修正・リファクタリング・テスト作成</li>
+      <li style="margin-bottom:8px;">コードベース全体の構造把握と質問応答（手動でファイルを渡す必要なし）</li>
+      <li style="margin-bottom:8px;">Git操作の会話化（差分確認・コミット・ブランチ作成・コンフリクト解消）</li>
+      <li style="margin-bottom:8px;">MCP連携でGoogle Drive・Figma・Jira等の外部情報も参照</li>
+      <li style="margin-bottom:8px;">ターミナル以外にWeb版・VS Code/JetBrains拡張・Slack等のインターフェースも提供</li>
+    </ul>
+
+    <h3 style="font-size:18px;font-weight:700;color:var(--navy);margin-bottom:14px;">インストール方法</h3>
+    <pre style="background:#0F172A;color:#E2E8F0;border-radius:10px;padding:20px 24px;font-size:13.5px;overflow-x:auto;margin-bottom:24px;"><code># macOS / Linux / WSL（推奨）
+curl -fsSL https://claude.ai/install.sh | bash
+
+# Homebrew（macOS / Linux）
+brew install --cask claude-code
+
+# Windows PowerShell
+irm https://claude.ai/install.ps1 | iex
+
+# npm（Node.js 18+ 必要）
+npm install -g @anthropic-ai/claude-code</code></pre>
+
+    <h3 style="font-size:18px;font-weight:700;color:var(--navy);margin-bottom:14px;">起動方法</h3>
+    <ol style="padding-left:22px;font-size:15px;margin-bottom:24px;">
+      <li style="margin-bottom:10px;"><code style="background:#0F172A;color:#E2E8F0;padding:2px 8px;border-radius:4px;">cd 対象リポジトリ</code> → <code style="background:#0F172A;color:#E2E8F0;padding:2px 8px;border-radius:4px;">claude</code> で起動（初回はブラウザ認証）</li>
+      <li style="margin-bottom:10px;">まず「このプロジェクトの構成を説明して」でリポジトリを把握させる</li>
+      <li style="margin-bottom:10px;">その後タスクを自然言語で依頼。<code style="background:#0F172A;color:#E2E8F0;padding:2px 8px;border-radius:4px;">/help</code> でコマンド一覧、<code style="background:#0F172A;color:#E2E8F0;padding:2px 8px;border-radius:4px;">/resume</code> で過去セッション再開</li>
+    </ol>
+
+    <div class="tips-box">
+      <h4>💡 コツと注意点</h4>
+      <ul>
+        <li><strong>必ずGit管理下で使う</strong>。実ファイルを書き換えるため、コミット・ブランチでいつでも巻き戻せる状態を先に作る</li>
+        <li><strong>タスクは小さく具体的に</strong>。「全部直して」より「このモジュールのこの挙動を直して」が良い</li>
+        <li>テストを「合格条件」として渡す（「テストが通るまで修正して」）と出力品質の検証をエージェント側に組み込める</li>
+        <li>npmインストールが動かない場合は <code style="background:#0F172A;color:#E2E8F0;padding:1px 6px;border-radius:4px;">node -v</code> でNode.js 18以上かを確認。満たさないならネイティブインストーラを使う</li>
+        <li>生成コードの正しさは保証されない。レビュー・テストは人間の責任</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===== QUIZ ===== -->
+<section id="quiz-section">
+  <div class="container">
+    <span class="eyebrow" style="background:rgba(96,165,250,.15);border-color:#60A5FA;color:#60A5FA;">QUIZ</span>
+    <h2 class="sec-title">📝 習熟度チェッククイズ</h2>
+    <p class="sec-lead">4択問題で理解度を確認しましょう。全10問。解説も表示されます。</p>
+
+    <!-- Progress -->
+    <div class="quiz-progress">
+      <div class="quiz-progress-bar">
+        <div class="quiz-progress-fill" id="prog-fill" style="width:0%"></div>
+      </div>
+      <span class="quiz-progress-text" id="prog-text">0 / 10</span>
+    </div>
+
+    <!-- Q1 -->
+    <div class="quiz-card active" data-q="0">
+      <div class="quiz-num">問題 1 / 10</div>
+      <p class="quiz-q">Claudeの「Project」機能の主な目的として最も適切なものはどれか？</p>
+      <div class="quiz-options">
+        <button class="quiz-option" data-idx="0"><span class="opt-label">A</span><span>ローカルPCのファイルを直接整理・変換する</span></button>
+        <button class="quiz-option" data-idx="1"><span class="opt-label">B</span><span>同じ資料・指示を毎回説明し直す手間をなくし、チャット品質を安定させる</span></button>
+        <button class="quiz-option" data-idx="2"><span class="opt-label">C</span><span>リポジトリのコードをターミナルから直接書き換える</span></button>
+        <button class="quiz-option" data-idx="3"><span class="opt-label">D</span><span>会話の結果として生まれた文書をURLで公開する</span></button>
+      </div>
+      <div class="quiz-feedback" data-correct="1" data-fb="正解はB。Projectはナレッジ（参照ファイル）とカスタム指示を一度設定することで、以後のすべてのチャットに自動的に適用される「専用作業部屋」機能です。A→Cowork、C→Claude Code、D→Artifactsの説明です。"></div>
+      <div class="quiz-nav">
+        <span></span>
+        <button class="quiz-btn" onclick="nextQ(1)" disabled id="next-0">次へ →</button>
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="quiz-card" data-q="1">
+      <div class="quiz-num">問題 2 / 10</div>
+      <p class="quiz-q">「Artifacts」機能でできないことはどれか？</p>
+      <div class="quiz-options">
+        <button class="quiz-option" data-idx="0"><span class="opt-label">A</span><span>HTML/ReactアプリをArtifactとして生成し、ブラウザ上で動かす</span></button>
+        <button class="quiz-option" data-idx="1"><span class="opt-label">B</span><span>作成したArtifactをURLで公開・共有する</span></button>
+        <button class="quiz-option" data-idx="2"><span class="opt-label">C</span><span>ローカルPCの指定フォルダにファイルを直接書き込む</span></button>
+        <button class="quiz-option" data-idx="3"><span class="opt-label">D</span><span>他人の公開ArtifactをCustomizeして自分のコピーを作る</span></button>
+      </div>
+      <div class="quiz-feedback" data-correct="2" data-fb="正解はC。ArtifactsはローカルPCにファイルを書き込みません。成果物はブラウザ上の表示とダウンロードのみです。ローカルファイルへの書き込みが必要な場合はCoworkを使います。"></div>
+      <div class="quiz-nav">
+        <button class="quiz-btn secondary" onclick="prevQ(1)">← 戻る</button>
+        <button class="quiz-btn" onclick="nextQ(2)" disabled id="next-1">次へ →</button>
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="quiz-card" data-q="2">
+      <div class="quiz-num">問題 3 / 10</div>
+      <p class="quiz-q">Coworkを使うために必須の条件はどれか？（最も適切なものを選べ）</p>
+      <div class="quiz-options">
+        <button class="quiz-option" data-idx="0"><span class="opt-label">A</span><span>Node.js 18以上がインストールされていること</span></button>
+        <button class="quiz-option" data-idx="1"><span class="opt-label">B</span><span>Claude Desktopアプリ（最新版）＋有料プランでのログイン</span></button>
+        <button class="quiz-option" data-idx="2"><span class="opt-label">C</span><span>GitHubアカウントとリポジトリが必要</span></button>
+        <button class="quiz-option" data-idx="3"><span class="opt-label">D</span><span>無料プランでもブラウザ版から利用できる</span></button>
+      </div>
+      <div class="quiz-feedback" data-correct="1" data-fb="正解はB。CoworkはClaude Desktopアプリ（macOS/Windows）が必須で、有料プラン（Pro/Max/Team/Enterprise）でのログインが前提です。Web・モバイル単体では使えません。Node.jsが必要なのはClaude CodeのnpmインストールのときのみでCowork自体には不要です。"></div>
+      <div class="quiz-nav">
+        <button class="quiz-btn secondary" onclick="prevQ(2)">← 戻る</button>
+        <button class="quiz-btn" onclick="nextQ(3)" disabled id="next-2">次へ →</button>
+      </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="quiz-card" data-q="3">
+      <div class="quiz-num">問題 4 / 10</div>
+      <p class="quiz-q">Claude Codeを使う際に「必ずGit管理下で使う」とされている理由として最も適切なものはどれか？</p>
+      <div class="quiz-options">
+        <button class="quiz-option" data-idx="0"><span class="opt-label">A</span><span>GitHubと連携しないとコードを読み込めないから</span></button>
+        <button class="quiz-option" data-idx="1"><span class="opt-label">B</span><span>Claude CodeはGitのコマンドしか実行できないから</span></button>
+        <button class="quiz-option" data-idx="2"><span class="opt-label">C</span><span>実際にファイルを書き換えるため、コミット・ブランチでいつでも巻き戻せる状態が安全だから</span></button>
+        <button class="quiz-option" data-idx="3"><span class="opt-label">D</span><span>ターミナルを使うにはGitのインストールが前提条件だから</span></button>
+      </div>
+      <div class="quiz-feedback" data-correct="2" data-fb="正解はC。Claude Codeは実際にファイルを書き換える（書き込む）ため、Git管理下でブランチ・コミットを使えば変更を追跡・巻き戻しできます。誤った変更も安全に元に戻せる状態を作ってから委任するのが基本です。"></div>
+      <div class="quiz-nav">
+        <button class="quiz-btn secondary" onclick="prevQ(3)">← 戻る</button>
+        <button class="quiz-btn" onclick="nextQ(4)" disabled id="next-3">次へ →</button>
+      </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="quiz-card" data-q="4">
+      <div class="quiz-num">問題 5 / 10</div>
+      <p class="quiz-q">「月末に溜まった数十枚の領収書画像を自動で読み取り、金額・科目を整理したExcelを作りたい」という要件に最も適した機能はどれか？</p>
+      <div class="quiz-options">
+        <button class="quiz-option" data-idx="0"><span class="opt-label">A</span><span>Project（ナレッジに領収書を登録してチャットで確認）</span></button>
+        <button class="quiz-option" data-idx="1"><span class="opt-label">B</span><span>Artifacts（領収書一覧のHTMLを生成して公開）</span></button>
+        <button class="quiz-option" data-idx="2"><span class="opt-label">C</span><span>Cowork（フォルダを指定して読み取り→集計→Excel生成を自動実行）</span></button>
+        <button class="quiz-option" data-idx="3"><span class="opt-label">D</span><span>Claude Code（ターミナルでスクリプトを書いて実行）</span></button>
+      </div>
+      <div class="quiz-feedback" data-correct="2" data-fb="正解はC。Coworkはローカルフォルダの実ファイルを直接操作し、複数ステップ作業（読み取り→集計→ファイル生成）を自動実行するのに最適です。非エンジニアでもデスクトップアプリから使えます。Claude Codeでも可能ですがターミナル操作が前提になります。"></div>
+      <div class="quiz-nav">
+        <button class="quiz-btn secondary" onclick="prevQ(4)">← 戻る</button>
+        <button class="quiz-btn" onclick="nextQ(5)" disabled id="next-4">次へ →</button>
+      </div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="quiz-card" data-q="5">
+      <div class="quiz-num">問題 6 / 10</div>
+      <p class="quiz-q">Projectのナレッジで、有料プランユーザーがファイル容量の上限に近づいたときに自動で有効化される仕組みの名称はどれか？</p>
+      <div class="quiz-options">
+        <button class="quiz-option" data-idx="0"><span class="opt-label">A</span><span>MCP（Model Context Protocol）</span></button>
+        <button class="quiz-option" data-idx="1"><span class="opt-label">B</span><span>RAG（Retrieval-Augmented Generation）</span></button>
+        <button class="quiz-option" data-idx="2"><span class="opt-label">C</span><span>Artifacts Publish</span></button>
+        <button class="quiz-option" data-idx="3"><span class="opt-label">D</span><span>Coworkエージェント基盤</span></button>
+      </div>
+      <div class="quiz-feedback" data-correct="1" data-fb="正解はB。RAG（Retrieval-Augmented Generation）は、ナレッジ全体をコンテキストに入れるのではなく必要な箇所だけ検索して参照する仕組みです。Pro/Max/Team/Enterpriseプランではナレッジが上限に近づくとRAGが自動有効化され、容量が最大約10倍に拡張されます。"></div>
+      <div class="quiz-nav">
+        <button class="quiz-btn secondary" onclick="prevQ(5)">← 戻る</button>
+        <button class="quiz-btn" onclick="nextQ(6)" disabled id="next-5">次へ →</button>
+      </div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="quiz-card" data-q="6">
+      <div class="quiz-num">問題 7 / 10</div>
+      <p class="quiz-q">他人が公開したArtifactを「Customize」ボタンで取得したとき、正しい説明はどれか？</p>
+      <div class="quiz-options">
+        <button class="quiz-option" data-idx="0"><span class="opt-label">A</span><span>元のArtifactが自分の編集で直接書き換えられる</span></button>
+        <button class="quiz-option" data-idx="1"><span class="opt-label">B</span><span>相手側のアカウントに自分の変更が通知される</span></button>
+        <button class="quiz-option" data-idx="2"><span class="opt-label">C</span><span>自分側に元のArtifactのコピーが作成され、それを自由に改変できる</span></button>
+        <button class="quiz-option" data-idx="3"><span class="opt-label">D</span><span>元のArtifactが削除され、自分のバージョンに置き換わる</span></button>
+      </div>
+      <div class="quiz-feedback" data-correct="2" data-fb="正解はC。Customizeは元のArtifactを変更しません。自分のアカウント側にコピーが作成され、そのコピーを会話で改変していく仕組みです。元の作成者のArtifactには何も影響がありません。"></div>
+      <div class="quiz-nav">
+        <button class="quiz-btn secondary" onclick="prevQ(6)">← 戻る</button>
+        <button class="quiz-btn" onclick="nextQ(7)" disabled id="next-6">次へ →</button>
+      </div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="quiz-card" data-q="7">
+      <div class="quiz-num">問題 8 / 10</div>
+      <p class="quiz-q">Claude Codeでリポジトリのキャッチアップをする際、最初に推奨される操作として最も適切なものはどれか？</p>
+      <div class="quiz-options">
+        <button class="quiz-option" data-idx="0"><span class="opt-label">A</span><span>すぐに「全部リファクタリングして」と依頼する</span></button>
+        <button class="quiz-option" data-idx="1"><span class="opt-label">B</span><span>「このプロジェクトの全体構成と主要モジュールの役割を説明して」と質問する</span></button>
+        <button class="quiz-option" data-idx="2"><span class="opt-label">C</span><span>全ファイルを手動でコピーしてチャットに貼り付ける</span></button>
+        <button class="quiz-option" data-idx="3"><span class="opt-label">D</span><span>まずProjectにリポジトリのファイルをアップロードする</span></button>
+      </div>
+      <div class="quiz-feedback" data-correct="1" data-fb="正解はB。Claude Codeはリポジトリ内のファイルを自律的に読み込む能力があります。まず構成を把握させてから、その理解の上でタスクを段階的に委任するのが推奨される手順です。手動でファイルを渡す必要はありません。"></div>
+      <div class="quiz-nav">
+        <button class="quiz-btn secondary" onclick="prevQ(7)">← 戻る</button>
+        <button class="quiz-btn" onclick="nextQ(8)" disabled id="next-7">次へ →</button>
+      </div>
+    </div>
+
+    <!-- Q9 -->
+    <div class="quiz-card" data-q="8">
+      <div class="quiz-num">問題 9 / 10</div>
+      <p class="quiz-q">Coworkで定期タスク（毎週自動実行）を設定する際に使うコマンドはどれか？</p>
+      <div class="quiz-options">
+        <button class="quiz-option" data-idx="0"><span class="opt-label">A</span><span><code>/cron</code></span></button>
+        <button class="quiz-option" data-idx="1"><span class="opt-label">B</span><span><code>/autorun</code></span></button>
+        <button class="quiz-option" data-idx="2"><span class="opt-label">C</span><span><code>/schedule</code></span></button>
+        <button class="quiz-option" data-idx="3"><span class="opt-label">D</span><span><code>/repeat</code></span></button>
+      </div>
+      <div class="quiz-feedback" data-correct="2" data-fb="正解はC。Coworkでは <code>/schedule</code> コマンドを使って定期タスクを設定できます（またはサイドバーの「Scheduled」から設定）。ただし、定期タスクはPCとアプリが起動・起きている状態のときのみ実行されます。"></div>
+      <div class="quiz-nav">
+        <button class="quiz-btn secondary" onclick="prevQ(8)">← 戻る</button>
+        <button class="quiz-btn" onclick="nextQ(9)" disabled id="next-8">次へ →</button>
+      </div>
+    </div>
+
+    <!-- Q10 -->
+    <div class="quiz-card" data-q="9">
+      <div class="quiz-num">問題 10 / 10</div>
+      <p class="quiz-q">「4機能の選択基準」として最も正確に表現されているものはどれか？</p>
+      <div class="quiz-options">
+        <button class="quiz-option" data-idx="0"><span class="opt-label">A</span><span>エンジニアはClaude Code、非エンジニアはProjectのみ使えばよい</span></button>
+        <button class="quiz-option" data-idx="1"><span class="opt-label">B</span><span>コードなら Claude Code → PC上の実作業なら Cowork → 繰り返す会話なら Project → 配る成果物なら Artifacts</span></button>
+        <button class="quiz-option" data-idx="2"><span class="opt-label">C</span><span>まずArtifactsを試し、足りなければCoworkに切り替える</span></button>
+        <button class="quiz-option" data-idx="3"><span class="opt-label">D</span><span>4つは同じ機能の別名であり、どれを選んでも結果は同じ</span></button>
+      </div>
+      <div class="quiz-feedback" data-correct="1" data-fb="正解はB。公式ガイドが示す判断の最短経路です。実務では「Projectの中で会話し、成果物はArtifactsで作り、ファイル作業が発生したらCoworkに渡す」という組み合わせ運用が基本形になります。4機能はそれぞれ異なる課題を解決するものです。"></div>
+      <div class="quiz-nav">
+        <button class="quiz-btn secondary" onclick="prevQ(9)">← 戻る</button>
+        <button class="quiz-btn" onclick="showResult()" disabled id="next-9">結果を見る 🎉</button>
+      </div>
+    </div>
+
+    <!-- Result -->
+    <div class="quiz-result" id="quiz-result">
+      <div class="result-score" id="result-score">0</div>
+      <div class="result-label">/ 10 問正解</div>
+      <div class="result-msg" id="result-msg"></div>
+      <div class="result-bars" id="result-bars"></div>
+      <button class="retry-btn" onclick="retryQuiz()">🔄 もう一度チャレンジ</button>
+      <button class="retry-btn ghost" onclick="scrollToTop()">📖 解説を読み直す</button>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <p>本資料の内容はAnthropicの公式ドキュメント（support.claude.com / docs.claude.com）を参照して作成。<br>
+  UIや機能はアップデートにより変わる場合があります。最新情報は公式サイトでご確認ください。</p>
+  <p style="margin-top:8px;">2026年6月 作成</p>
+</footer>
+
+<script>
+// ===== QUIZ LOGIC =====
+const TOTAL = 10;
+var answers = new Array(TOTAL).fill(-1);  // user's chosen answer per question
+var results = new Array(TOTAL).fill(null); // true/false per question
+var currentQ = 0;
+
+function getCard(q) { return document.querySelector('.quiz-card[data-q="' + q + '"]'); }
+
+function selectOption(q, idx) {
+  var card = getCard(q);
+  var feedback = card.querySelector('.quiz-feedback');
+  var correct = parseInt(feedback.dataset.correct);
+  var opts = card.querySelectorAll('.quiz-option');
+
+  // Disable all options
+  opts.forEach(function(o) { o.disabled = true; });
+
+  answers[q] = idx;
+  results[q] = (idx === correct);
+
+  // Apply styles
+  opts[idx].classList.add(idx === correct ? 'correct' : 'wrong');
+  if (idx !== correct) {
+    opts[correct].classList.add('reveal-correct');
+  }
+
+  // Show feedback
+  feedback.classList.add('show');
+  feedback.classList.add(results[q] ? 'correct-fb' : 'wrong-fb');
+  feedback.innerHTML = (results[q] ? '✅ <b>正解！</b> ' : '❌ <b>不正解。</b> ') + feedback.dataset.fb;
+
+  // Enable next button
+  document.getElementById('next-' + q).disabled = false;
+
+  updateProgress(q + 1);
+}
+
+function updateProgress(answered) {
+  var pct = (answered / TOTAL) * 100;
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-text').textContent = answered + ' / ' + TOTAL;
+}
+
+function nextQ(to) {
+  var from = to - 1;
+  getCard(from).classList.remove('active');
+  getCard(to).classList.add('active');
+  currentQ = to;
+  getCard(to).scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function prevQ(to) {
+  var from = to + 1;
+  getCard(from).classList.remove('active');
+  getCard(to).classList.add('active');
+  currentQ = to;
+  getCard(to).scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function showResult() {
+  var last = getCard(TOTAL - 1);
+  last.classList.remove('active');
+
+  var score = results.filter(Boolean).length;
+  var resultEl = document.getElementById('quiz-result');
+  resultEl.classList.add('show');
+
+  document.getElementById('result-score').textContent = score;
+
+  var msgs = [
+    { min: 0, max: 3, msg: '解説をもう一度読み直して、各機能の役割をしっかり整理しましょう。' },
+    { min: 4, max: 6, msg: '基礎は押さえています。間違えた問題の解説を確認して、理解を深めましょう。' },
+    { min: 7, max: 8, msg: 'よく理解できています！残りの問題の解説も確認しておきましょう。' },
+    { min: 9, max: 10, msg: '素晴らしい！Claudeの4機能を完全に使いこなせます。実際の業務でどんどん活用しましょう！' }
+  ];
+  var found = msgs.find(function(m) { return score >= m.min && score <= m.max; });
+  document.getElementById('result-msg').textContent = found ? found.msg : '';
+
+  // Category bars (group questions by feature)
+  var cats = [
+    { name: 'Project', qs: [0, 5] },
+    { name: 'Artifacts', qs: [1, 6] },
+    { name: 'Cowork', qs: [2, 4, 8] },
+    { name: 'Claude Code', qs: [3, 7] },
+    { name: '総合判断', qs: [9] }
+  ];
+  var barsHtml = '';
+  cats.forEach(function(cat) {
+    var correct = cat.qs.filter(function(q) { return results[q] === true; }).length;
+    var total = cat.qs.length;
+    var pct = Math.round((correct / total) * 100);
+    barsHtml += '<div class="result-bar-item"><span>' + cat.name + '</span><div class="result-bar-track"><div class="result-bar-fill" style="width:0%" data-pct="' + pct + '"></div></div><span>' + correct + '/' + total + '</span></div>';
+  });
+  document.getElementById('result-bars').innerHTML = barsHtml;
+
+  setTimeout(function() {
+    document.querySelectorAll('.result-bar-fill').forEach(function(el) {
+      el.style.width = el.dataset.pct + '%';
+    });
+  }, 100);
+
+  resultEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function retryQuiz() {
+  answers = new Array(TOTAL).fill(-1);
+  results = new Array(TOTAL).fill(null);
+  currentQ = 0;
+
+  // Reset all cards
+  for (var i = 0; i < TOTAL; i++) {
+    var card = getCard(i);
+    card.classList.remove('active');
+    var opts = card.querySelectorAll('.quiz-option');
+    opts.forEach(function(o) {
+      o.disabled = false;
+      o.classList.remove('correct', 'wrong', 'reveal-correct');
+    });
+    var fb = card.querySelector('.quiz-feedback');
+    fb.classList.remove('show', 'correct-fb', 'wrong-fb');
+    document.getElementById('next-' + i).disabled = true;
+  }
+  getCard(0).classList.add('active');
+
+  document.getElementById('quiz-result').classList.remove('show');
+  document.getElementById('prog-fill').style.width = '0%';
+  document.getElementById('prog-text').textContent = '0 / 10';
+
+  document.getElementById('quiz-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function scrollToTop() {
+  document.getElementById('overview').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Attach option click handlers
+document.querySelectorAll('.quiz-card').forEach(function(card) {
+  var q = parseInt(card.dataset.q);
+  card.querySelectorAll('.quiz-option').forEach(function(opt) {
+    opt.addEventListener('click', function() {
+      if (!opt.disabled) selectOption(q, parseInt(opt.dataset.idx));
+    });
+  });
+});
+</script>
+</body>
+</html>
