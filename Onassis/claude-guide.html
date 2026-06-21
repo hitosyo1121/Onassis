@@ -3,714 +3,848 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Claudeの主要機能 解説＆習熟度チェック</title>
+<title>Claudeの主要機能 完全ガイド</title>
 <style>
-  :root {
-    --blue: #2563EB;
-    --navy: #1E3A8A;
-    --bg: #F1F5F9;
-    --line: #CBD5E1;
-    --text: #1E293B;
-    --sub: #64748B;
-    --white: #FFFFFF;
-    --blue-soft: #EFF6FF;
-    --green: #059669;
-    --red: #DC2626;
-    --yellow: #D97706;
+  :root{
+    --blue:#2563EB; --navy:#1E3A8A; --bg:#F1F5F9; --line:#CBD5E1;
+    --text:#1E293B; --sub:#64748B; --white:#FFFFFF;
+    --blue-soft:#EFF6FF; --navy-soft:#E0E7FF;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body {
-    font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic UI", "Meiryo", -apple-system, "Segoe UI", sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    font-size: 16px;
-    line-height: 1.8;
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic UI","Meiryo",-apple-system,"Segoe UI",sans-serif;
+    background:var(--bg); color:var(--text); font-size:16px; line-height:1.75;
+  }
+  /* ===== スライドカード（1カード=1スライド） ===== */
+  .card{
+    background:var(--white); max-width:1280px; margin:32px auto;
+    border:1px solid var(--line); border-radius:12px;
+    padding:48px 56px; box-shadow:0 1px 3px rgba(30,41,59,.06);
+  }
+  .card-title{
+    font-size:26px; font-weight:700; color:var(--navy);
+    border-left:6px solid var(--blue); padding-left:16px; margin-bottom:8px;
+  }
+  .card-lead{color:var(--sub); margin-bottom:24px; font-size:15px;}
+  .eyebrow{
+    display:inline-block; font-size:13px; font-weight:700; letter-spacing:.12em;
+    color:var(--blue); background:var(--blue-soft); border:1px solid var(--blue);
+    border-radius:999px; padding:2px 14px; margin-bottom:12px;
+  }
+  h3{font-size:20px; color:var(--navy); margin:28px 0 12px; font-weight:700;}
+  h4{font-size:17px; color:var(--text); margin:20px 0 8px; font-weight:700;}
+  p{margin-bottom:12px;}
+  ul,ol{padding-left:24px; margin-bottom:12px;}
+  li{margin-bottom:6px;}
+  .note{font-size:14px; color:var(--sub);}
+  .verify{
+    display:inline-block; font-size:12.5px; color:#92400E; background:#FEF3C7;
+    border:1px solid #F59E0B; border-radius:4px; padding:0 8px; font-weight:600;
+  }
+  .term{border-bottom:2px dotted var(--blue);}
+  code,.kbd{
+    font-family:"SF Mono",Consolas,"Courier New",monospace; font-size:14px;
+    background:#0F172A; color:#E2E8F0; border-radius:6px; padding:2px 8px;
+  }
+  pre{
+    background:#0F172A; color:#E2E8F0; border-radius:8px; padding:16px 20px;
+    font-family:"SF Mono",Consolas,monospace; font-size:14px; overflow-x:auto;
+    margin:12px 0; line-height:1.6;
+  }
+  pre code{background:none; padding:0;}
+
+  /* ===== 表紙 ===== */
+  .cover{
+    background:linear-gradient(135deg,var(--navy) 0%,var(--blue) 100%);
+    color:#fff; text-align:center; padding:90px 56px; border:none;
+  }
+  .cover h1{font-size:44px; font-weight:800; letter-spacing:.02em; margin-bottom:16px;}
+  .cover .subtitle{font-size:19px; opacity:.92; margin-bottom:36px;}
+  .cover-meta{
+    display:inline-block; text-align:left; background:rgba(255,255,255,.12);
+    border:1px solid rgba(255,255,255,.35); border-radius:10px; padding:18px 32px; font-size:15px;
+  }
+  .cover-meta dt{font-weight:700; opacity:.8; font-size:13px; margin-top:8px;}
+  .cover-meta dt:first-child{margin-top:0;}
+  .cover-badges{margin-top:28px;}
+  .cover-badges span{
+    display:inline-block; background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.4);
+    border-radius:999px; padding:6px 18px; margin:4px 6px; font-size:14px; font-weight:600;
   }
 
-  /* ===== HEADER ===== */
-  header {
-    background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
-    color: #fff;
-    padding: 60px 24px 48px;
-    text-align: center;
+  /* ===== 目次 ===== */
+  .toc ol{list-style:none; padding:0; display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+  .toc a{
+    display:block; text-decoration:none; color:var(--text); background:var(--bg);
+    border:1px solid var(--line); border-radius:8px; padding:10px 16px; font-weight:600;
   }
-  header h1 { font-size: 36px; font-weight: 800; margin-bottom: 12px; }
-  header p { font-size: 17px; opacity: .9; max-width: 700px; margin: 0 auto 24px; }
-  .header-badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
-  .header-badges span {
-    background: rgba(255,255,255,.15);
-    border: 1px solid rgba(255,255,255,.4);
-    border-radius: 999px;
-    padding: 6px 20px;
-    font-size: 14px;
-    font-weight: 600;
+  .toc a:hover{border-color:var(--blue); color:var(--blue);}
+  .toc .toc-num{color:var(--blue); font-weight:800; margin-right:10px;}
+
+  /* ===== 比較表 ===== */
+  .cmp-wrap{overflow-x:auto;}
+  table.cmp{width:100%; border-collapse:collapse; font-size:14.5px; min-width:980px;}
+  .cmp th,.cmp td{border:1px solid var(--line); padding:12px 14px; vertical-align:top; text-align:left;}
+  .cmp thead th{background:var(--navy); color:#fff; font-size:16px; text-align:center;}
+  .cmp thead th:first-child{background:var(--white); border-top-color:var(--white); border-left-color:var(--white);}
+  .cmp tbody th{background:var(--blue-soft); color:var(--navy); width:130px; font-size:14px; white-space:nowrap;}
+  .cmp .oneword{font-size:16px; font-weight:800; color:var(--blue); text-align:center;}
+  .cmp tbody tr:nth-child(even) td{background:#F8FAFC;}
+  .pill{
+    display:inline-block; font-size:12px; font-weight:700; border-radius:4px;
+    padding:1px 8px; margin:1px 2px; background:var(--navy-soft); color:var(--navy);
   }
 
-  /* ===== NAV ===== */
-  nav.page-nav {
-    background: var(--white);
-    border-bottom: 2px solid var(--blue);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 2px 8px rgba(30,58,138,.08);
+  /* ===== タブ ===== */
+  .tabbar{
+    max-width:1280px; margin:40px auto 0; display:flex; gap:8px; padding:0 8px;
   }
-  nav.page-nav ul {
-    display: flex;
-    list-style: none;
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 0 16px;
-    overflow-x: auto;
+  .tabbar button{
+    flex:1; font-size:17px; font-weight:700; padding:16px 8px; cursor:pointer;
+    border:1px solid var(--line); border-bottom:none; border-radius:12px 12px 0 0;
+    background:#E2E8F0; color:var(--sub); font-family:inherit;
   }
-  nav.page-nav ul li a {
-    display: block;
-    padding: 14px 18px;
-    font-weight: 700;
-    font-size: 14px;
-    color: var(--sub);
-    text-decoration: none;
-    white-space: nowrap;
-    border-bottom: 3px solid transparent;
-    transition: color .2s, border-color .2s;
-  }
-  nav.page-nav ul li a:hover { color: var(--blue); border-bottom-color: var(--blue); }
-
-  /* ===== CONTENT ===== */
-  .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
-
-  section.section { padding: 60px 0 40px; }
-  section.section + section.section { border-top: 1px solid var(--line); }
-
-  .eyebrow {
-    display: inline-block;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: .14em;
-    color: var(--blue);
-    background: var(--blue-soft);
-    border: 1px solid var(--blue);
-    border-radius: 999px;
-    padding: 3px 14px;
-    margin-bottom: 14px;
-  }
-  h2.sec-title {
-    font-size: 28px;
-    font-weight: 800;
-    color: var(--navy);
-    border-left: 6px solid var(--blue);
-    padding-left: 18px;
-    margin-bottom: 10px;
-  }
-  .sec-lead { color: var(--sub); font-size: 15px; margin-bottom: 32px; }
-
-  /* ===== FEATURE CARDS ===== */
-  .feature-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
-    margin-bottom: 40px;
-  }
-  .feature-card {
-    background: var(--white);
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    padding: 28px 28px 24px;
-    border-top: 5px solid var(--blue);
-    box-shadow: 0 2px 8px rgba(30,58,138,.06);
-  }
-  .feature-card .fc-icon { font-size: 32px; margin-bottom: 12px; }
-  .feature-card h3 {
-    font-size: 20px;
-    font-weight: 800;
-    color: var(--navy);
-    margin-bottom: 6px;
-  }
-  .feature-card .fc-tag {
-    display: inline-block;
-    background: var(--blue-soft);
-    color: var(--blue);
-    font-size: 12px;
-    font-weight: 700;
-    border-radius: 4px;
-    padding: 2px 10px;
-    margin-bottom: 14px;
-  }
-  .feature-card p { font-size: 14.5px; color: var(--text); margin-bottom: 12px; }
-  .feature-card ul { padding-left: 20px; font-size: 14px; color: var(--text); }
-  .feature-card ul li { margin-bottom: 5px; }
-  .feature-card .cant-list { color: var(--sub); }
-
-  /* ===== COMPARISON TABLE ===== */
-  .table-wrap { overflow-x: auto; margin-bottom: 32px; }
-  table.cmp {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-    min-width: 700px;
-  }
-  .cmp th, .cmp td {
-    border: 1px solid var(--line);
-    padding: 12px 14px;
-    text-align: left;
-    vertical-align: top;
-  }
-  .cmp thead th {
-    background: var(--navy);
-    color: #fff;
-    text-align: center;
-    font-size: 15px;
-  }
-  .cmp thead th:first-child { background: #fff; }
-  .cmp tbody th {
-    background: var(--blue-soft);
-    color: var(--navy);
-    width: 140px;
-    font-size: 13px;
-    white-space: nowrap;
-  }
-  .cmp tbody tr:nth-child(even) td { background: #F8FAFC; }
-  .pill {
-    display: inline-block;
-    background: #E0E7FF;
-    color: var(--navy);
-    font-size: 12px;
-    font-weight: 700;
-    border-radius: 4px;
-    padding: 1px 8px;
-    margin: 1px 2px;
+  .tabbar button.active{background:var(--blue); color:#fff; border-color:var(--blue);}
+  .tabbar button:hover:not(.active){background:#fff; color:var(--blue);}
+  .tabpanel{display:none;}
+  .tabpanel.active{display:block;}
+  .panel-frame{
+    max-width:1296px; margin:0 auto 8px; border-top:4px solid var(--blue);
+    background:transparent; padding-top:4px;
   }
 
-  /* ===== FLOW ===== */
-  .flow-steps {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: stretch;
-    gap: 0;
-    margin-bottom: 32px;
+  /* ===== UIモック ===== */
+  .mock{
+    border:1px solid var(--line); border-radius:10px; overflow:hidden;
+    margin:16px 0 6px; background:#fff; box-shadow:0 2px 6px rgba(30,41,59,.08);
   }
-  .flow-step {
-    flex: 1;
-    min-width: 180px;
-    background: var(--white);
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    padding: 20px 18px;
-    position: relative;
+  .mock-bar{
+    background:#E2E8F0; padding:8px 14px; display:flex; align-items:center; gap:8px;
+    border-bottom:1px solid var(--line);
   }
-  .flow-step + .flow-step { margin-left: 12px; }
-  .flow-step::before {
-    content: "→";
-    position: absolute;
-    left: -16px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--blue);
-    font-size: 22px;
-    font-weight: 800;
+  .dot{width:11px; height:11px; border-radius:50%; background:#CBD5E1;}
+  .mock-url{
+    flex:1; background:#fff; border:1px solid var(--line); border-radius:6px;
+    font-size:12.5px; color:var(--sub); padding:2px 12px;
   }
-  .flow-step:first-child::before { display: none; }
-  .flow-step b { display: block; color: var(--blue); font-size: 13px; margin-bottom: 6px; font-weight: 700; }
+  .mock-body{display:flex; min-height:230px;}
+  .mock-side{
+    width:210px; background:#F8FAFC; border-right:1px solid var(--line);
+    padding:14px 12px; font-size:13px; color:var(--sub); flex-shrink:0;
+  }
+  .mock-side .side-item{padding:7px 10px; border-radius:6px; margin-bottom:3px; position:relative;}
+  .mock-side .side-item.sel{background:var(--blue-soft); color:var(--blue); font-weight:700;}
+  .mock-main{flex:1; padding:20px 24px; font-size:14px; position:relative;}
+  .mock-btn{
+    display:inline-block; background:var(--blue); color:#fff; font-weight:700;
+    border-radius:8px; padding:7px 18px; font-size:13.5px; position:relative;
+  }
+  .mock-btn.ghost{background:#fff; color:var(--text); border:1px solid var(--line);}
+  .mock-input{
+    border:1px solid var(--line); border-radius:8px; padding:10px 14px;
+    color:#94A3B8; font-size:13.5px; margin:8px 0; background:#fff; position:relative;
+  }
+  .mock-panel-right{
+    border-left:1px solid var(--line); width:42%; background:#F8FAFC; padding:16px; flex-shrink:0;
+  }
+  .badge{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:26px; height:26px; border-radius:50%; background:var(--navy); color:#fff;
+    font-weight:800; font-size:14px; flex-shrink:0;
+  }
+  .badge.on{position:absolute; top:-12px; right:-12px; box-shadow:0 0 0 3px #fff; z-index:2;}
+  .callout{
+    display:inline-block; background:var(--navy); color:#fff; font-size:12.5px; font-weight:600;
+    border-radius:6px; padding:4px 10px; position:relative; margin-left:8px;
+  }
+  .callout::before{
+    content:""; position:absolute; left:-6px; top:50%; transform:translateY(-50%);
+    border:6px solid transparent; border-right-color:var(--navy); border-left:0;
+  }
+  .mock-caption{
+    font-size:12.5px; color:var(--sub); margin-bottom:14px;
+  }
+  .mock-caption::before{content:"▲ "; color:var(--blue);}
+  .shot-placeholder{
+    border:2px dashed var(--blue); border-radius:10px; background:var(--blue-soft);
+    color:var(--blue); font-size:13.5px; font-weight:600; text-align:center;
+    padding:26px 16px; margin:6px 0 20px;
+  }
+  .shot-placeholder small{display:block; color:var(--sub); font-weight:400; margin-top:4px;}
 
-  /* ===== TIPS BOX ===== */
-  .tips-box {
-    background: var(--blue-soft);
-    border: 1px solid var(--blue);
-    border-radius: 12px;
-    padding: 22px 28px;
-    margin-top: 24px;
+  /* ===== 手順 ===== */
+  .steps{list-style:none; padding:0; counter-reset:st;}
+  .steps>li{
+    counter-increment:st; padding:14px 0 14px 44px; position:relative;
+    border-bottom:1px dashed var(--line); margin:0;
   }
-  .tips-box h4 { color: var(--navy); font-size: 16px; margin-bottom: 12px; }
-  .tips-box ul { padding-left: 20px; font-size: 14.5px; }
-  .tips-box ul li { margin-bottom: 8px; }
+  .steps>li::before{
+    content:counter(st); position:absolute; left:0; top:16px;
+    width:28px; height:28px; border-radius:50%; background:var(--navy); color:#fff;
+    font-weight:800; font-size:14px; display:flex; align-items:center; justify-content:center;
+  }
+  .steps>li strong:first-child{color:var(--navy);}
 
-  /* ===== QUIZ ===== */
-  #quiz-section {
-    background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 100%);
-    padding: 60px 0 80px;
-  }
-  #quiz-section h2.sec-title { color: #fff; border-left-color: #60A5FA; }
-  #quiz-section .sec-lead { color: #94A3B8; }
+  /* ===== ボックス ===== */
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+  .box{border:1px solid var(--line); border-radius:10px; padding:18px 22px; background:#F8FAFC;}
+  .box.can{border-top:4px solid var(--blue);}
+  .box.cant{border-top:4px solid var(--sub);}
+  .box h4{margin-top:0;}
+  .tips{background:var(--blue-soft); border:1px solid var(--blue); border-radius:10px; padding:20px 26px;}
+  .tips h4{color:var(--navy); margin-top:0;}
 
-  .quiz-progress {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 28px;
+  /* ===== 演習（今日の10分） ===== */
+  .card.exercise{border:2px solid var(--blue); position:relative;}
+  .ex-head{display:flex; align-items:center; gap:14px; margin-bottom:6px; flex-wrap:wrap;}
+  .ex-timer{
+    background:var(--navy); color:#fff; font-weight:800; font-size:14px;
+    border-radius:999px; padding:6px 18px; letter-spacing:.05em; white-space:nowrap;
   }
-  .quiz-progress-bar {
-    flex: 1;
-    height: 6px;
-    background: rgba(255,255,255,.15);
-    border-radius: 999px;
-    overflow: hidden;
+  .ex-goal{
+    background:var(--blue-soft); border-left:4px solid var(--blue); border-radius:0 8px 8px 0;
+    padding:12px 18px; margin:14px 0 18px; font-size:15.5px;
   }
-  .quiz-progress-fill {
-    height: 100%;
-    background: #60A5FA;
-    border-radius: 999px;
-    transition: width .4s ease;
+  .ex-goal b{color:var(--navy);}
+  .checklist{list-style:none; padding:0; margin:8px 0 0;}
+  .checklist li{
+    padding:8px 0 8px 34px; position:relative; border-bottom:1px dashed var(--line); margin:0;
   }
-  .quiz-progress-text { color: #94A3B8; font-size: 14px; white-space: nowrap; }
+  .checklist li::before{
+    content:""; position:absolute; left:2px; top:12px; width:18px; height:18px;
+    border:2px solid var(--blue); border-radius:4px; background:#fff;
+  }
+  .ex-grid{display:grid; grid-template-columns:1.1fr .9fr; gap:24px; margin-top:6px;}
+  .ex-stuck{background:#F8FAFC; border:1px solid var(--line); border-radius:10px; padding:16px 20px;}
+  .ex-stuck h4{margin-top:0; color:var(--sub); font-size:15px;}
+  .ex-stuck li{font-size:14px;}
+  @media (max-width:860px){ .ex-grid{grid-template-columns:1fr;} }
+  .scenario-flow{
+    display:flex; align-items:stretch; gap:10px; margin:14px 0; flex-wrap:wrap;
+  }
+  .scenario-flow .sf{
+    flex:1; min-width:180px; border:1px solid var(--line); border-radius:8px;
+    padding:12px 16px; background:#fff; font-size:14px;
+  }
+  .scenario-flow .sf b{display:block; color:var(--blue); font-size:13px; margin-bottom:4px;}
+  .sf-arrow{align-self:center; color:var(--blue); font-size:22px; font-weight:800;}
 
-  .quiz-card {
-    background: rgba(255,255,255,.06);
-    border: 1px solid rgba(255,255,255,.12);
-    border-radius: 16px;
-    padding: 36px 40px;
-    display: none;
-  }
-  .quiz-card.active { display: block; }
+  svg text{font-family:inherit;}
 
-  .quiz-num {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: .12em;
-    color: #60A5FA;
-    margin-bottom: 12px;
-  }
-  .quiz-q {
-    font-size: 19px;
-    font-weight: 700;
-    color: #fff;
-    margin-bottom: 28px;
-    line-height: 1.65;
-  }
+  footer{max-width:1280px; margin:24px auto 60px; padding:0 16px; font-size:13px; color:var(--sub);}
+  footer a{color:var(--blue);}
 
-  .quiz-options { display: flex; flex-direction: column; gap: 12px; }
-  .quiz-option {
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    background: rgba(255,255,255,.07);
-    border: 2px solid rgba(255,255,255,.12);
-    border-radius: 10px;
-    padding: 16px 20px;
-    cursor: pointer;
-    transition: border-color .2s, background .2s;
-    text-align: left;
-    font-family: inherit;
-    color: #E2E8F0;
-    font-size: 15px;
-    line-height: 1.6;
+  @media (max-width:860px){
+    .card{padding:28px 20px; margin:16px 10px;}
+    .grid2{grid-template-columns:1fr;}
+    .toc ol{grid-template-columns:1fr;}
+    .cover h1{font-size:30px;}
+    .mock-side{width:140px;}
+    .mock-panel-right{display:none;}
   }
-  .quiz-option:hover:not(:disabled) {
-    border-color: #60A5FA;
-    background: rgba(96,165,250,.1);
-  }
-  .quiz-option .opt-label {
-    flex-shrink: 0;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: rgba(255,255,255,.12);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
-    font-size: 13px;
-    margin-top: 1px;
-  }
-  .quiz-option.correct {
-    border-color: #34D399;
-    background: rgba(52,211,153,.12);
-  }
-  .quiz-option.correct .opt-label { background: #34D399; color: #0F172A; }
-  .quiz-option.wrong {
-    border-color: #F87171;
-    background: rgba(248,113,113,.1);
-  }
-  .quiz-option.wrong .opt-label { background: #F87171; color: #fff; }
-  .quiz-option.reveal-correct {
-    border-color: #34D399;
-    background: rgba(52,211,153,.08);
-    opacity: .7;
-  }
-  .quiz-option:disabled { cursor: default; }
-
-  .quiz-feedback {
-    margin-top: 20px;
-    padding: 16px 20px;
-    border-radius: 10px;
-    font-size: 15px;
-    display: none;
-    line-height: 1.7;
-  }
-  .quiz-feedback.show { display: block; }
-  .quiz-feedback.correct-fb { background: rgba(52,211,153,.15); border: 1px solid #34D399; color: #6EE7B7; }
-  .quiz-feedback.wrong-fb { background: rgba(248,113,113,.12); border: 1px solid #F87171; color: #FCA5A5; }
-  .quiz-feedback b { color: #fff; }
-
-  .quiz-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 24px;
-  }
-  .quiz-btn {
-    background: #2563EB;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 12px 28px;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    font-family: inherit;
-    transition: background .2s;
-  }
-  .quiz-btn:hover { background: #1D4ED8; }
-  .quiz-btn:disabled { background: rgba(255,255,255,.1); color: #64748B; cursor: default; }
-  .quiz-btn.secondary {
-    background: rgba(255,255,255,.08);
-    color: #94A3B8;
-  }
-  .quiz-btn.secondary:hover { background: rgba(255,255,255,.14); color: #fff; }
-
-  /* ===== RESULT ===== */
-  .quiz-result {
-    text-align: center;
-    padding: 20px;
-    display: none;
-  }
-  .quiz-result.show { display: block; }
-  .result-score {
-    font-size: 72px;
-    font-weight: 900;
-    color: #fff;
-    line-height: 1;
-    margin-bottom: 8px;
-  }
-  .result-label { font-size: 20px; color: #94A3B8; margin-bottom: 32px; }
-  .result-msg {
-    font-size: 18px;
-    font-weight: 700;
-    color: #E2E8F0;
-    max-width: 600px;
-    margin: 0 auto 32px;
-    line-height: 1.7;
-  }
-  .result-bars { max-width: 500px; margin: 0 auto 32px; text-align: left; }
-  .result-bar-item { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
-  .result-bar-item span:first-child { width: 120px; font-size: 13px; color: #94A3B8; flex-shrink: 0; }
-  .result-bar-track {
-    flex: 1;
-    height: 8px;
-    background: rgba(255,255,255,.1);
-    border-radius: 999px;
-    overflow: hidden;
-  }
-  .result-bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #2563EB, #60A5FA);
-    border-radius: 999px;
-    transition: width 1s ease .3s;
-  }
-  .result-bar-item span:last-child { font-size: 13px; color: #60A5FA; font-weight: 700; width: 40px; text-align: right; }
-
-  .retry-btn {
-    background: linear-gradient(90deg, #2563EB, #3B82F6);
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    padding: 16px 40px;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-    font-family: inherit;
-    transition: opacity .2s;
-    margin: 0 8px;
-  }
-  .retry-btn:hover { opacity: .88; }
-  .retry-btn.ghost {
-    background: rgba(255,255,255,.08);
-    color: #94A3B8;
-  }
-
-  /* ===== FOOTER ===== */
-  footer {
-    background: #0F172A;
-    color: #475569;
-    text-align: center;
-    padding: 32px 20px;
-    font-size: 13px;
-  }
-  footer a { color: #60A5FA; }
-
-  /* ===== RESPONSIVE ===== */
-  @media (max-width: 768px) {
-    header h1 { font-size: 26px; }
-    h2.sec-title { font-size: 22px; }
-    .feature-grid { grid-template-columns: 1fr; }
-    .quiz-card { padding: 24px 20px; }
-    .quiz-q { font-size: 16px; }
-    .flow-steps { flex-direction: column; }
-    .flow-step + .flow-step { margin-left: 0; margin-top: 8px; }
-    .flow-step::before { display: none; }
+  @media print{
+    body{background:#fff;}
+    .card{
+      break-after:page; page-break-after:always;
+      box-shadow:none; border:none; margin:0 auto; max-width:100%;
+    }
+    .tabbar{display:none;}
+    .tabpanel{display:block !important;}
+    .toc a{border:none;}
+    .shot-placeholder{break-inside:avoid;}
+    .mock{break-inside:avoid;}
   }
 </style>
 </head>
 <body>
 
-<!-- ===== HEADER ===== -->
-<header>
-  <h1>Claudeの主要機能 解説ガイド</h1>
-  <p>Project / Artifacts / Cowork / Claude Code の違いと使い分けを学び、4択クイズで理解度を確かめよう。</p>
-  <div class="header-badges">
-    <span>📁 Project</span>
-    <span>🧩 Artifacts</span>
-    <span>🛠 Cowork</span>
-    <span>⌨ Claude Code</span>
+<!-- ============ 0. 表紙 ============ -->
+<section class="card cover" id="cover">
+  <h1>Claudeの主要機能 完全ガイド</h1>
+  <p class="subtitle">Project / Artifacts / Cowork / Claude Code ―― 「どれを・いつ・なぜ使うか」が判断できるようになる実用解説</p>
+  <div class="cover-badges">
+    <span>Project</span><span>Artifacts（＋カスタマイズ）</span><span>Cowork</span><span>Claude Code</span>
   </div>
-</header>
+  <div style="height:28px"></div>
+  <dl class="cover-meta">
+    <dt>想定読者</dt><dd>Claudeを業務利用し始めた初学者〜中級者（非エンジニア・エンジニア両方）</dd>
+    <dt>本資料の根拠</dt><dd>Anthropic公式（support.claude.com / docs.claude.com / anthropic.com）を参照して作成。未確認事項は <span style="background:#FEF3C7;color:#92400E;border-radius:4px;padding:0 6px;font-size:13px;">※公式ドキュメントで要確認</span> と明示</dd>
+    <dt>最終更新日</dt><dd>2026年6月10日</dd>
+  </dl>
+  <p style="margin-top:28px;font-size:13px;opacity:.85;">本資料内の画面図はすべてHTML/CSSで作成した「説明用の模式図」であり、実際のスクリーンショットではありません。UIは更新により変わる場合があります。</p>
+</section>
 
-<!-- ===== PAGE NAV ===== -->
-<nav class="page-nav">
-  <ul>
-    <li><a href="#overview">概要・比較</a></li>
-    <li><a href="#project">Project</a></li>
-    <li><a href="#artifacts">Artifacts</a></li>
-    <li><a href="#cowork">Cowork</a></li>
-    <li><a href="#code">Claude Code</a></li>
-    <li><a href="#quiz-section">📝 習熟度クイズ</a></li>
-  </ul>
+<!-- ============ 目次 ============ -->
+<section class="card toc" id="toc">
+  <h2 class="card-title">目次</h2>
+  <ol>
+    <li><a href="#compare"><span class="toc-num">1</span>4機能 横並び比較（まずここ）</a></li>
+    <li><a href="#flowchart"><span class="toc-num">2</span>選択フローチャート：結局どれを使うか</a></li>
+    <li><a href="#tab-chat" onclick="openTab('chat')"><span class="toc-num">3</span>タブ① Chat（Project・Artifacts）</a></li>
+    <li><a href="#tab-cowork" onclick="openTab('cowork')"><span class="toc-num">4</span>タブ② Cowork</a></li>
+    <li><a href="#tab-code" onclick="openTab('code')"><span class="toc-num">5</span>タブ③ Claude Code</a></li>
+    <li><a href="#summary"><span class="toc-num">6</span>まとめ：使い分けの結論</a></li>
+  </ol>
+  <p class="note" style="margin-top:14px;">※本資料の章立てでは、Project と Artifacts のカスタマイズは「Chatタブ」内で扱います。この振り分けが意図と異なる場合は調整可能です（前提として明記）。</p>
+</section>
+
+<!-- ============ 1. 比較 ============ -->
+<section class="card" id="compare">
+  <span class="eyebrow">SECTION 1</span>
+  <h2 class="card-title">4機能 横並び比較</h2>
+  <p class="card-lead">違いは一言でいえば「<b>覚えさせる（Project）／作って共有する（Artifacts）／PC作業を任せる（Cowork）／コードを任せる（Claude Code）</b>」。詳細は下表のとおり。</p>
+  <div class="cmp-wrap">
+  <table class="cmp">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Project</th>
+        <th>Artifacts<br><span style="font-size:12px;font-weight:400;">（＋カスタマイズ）</span></th>
+        <th>Cowork</th>
+        <th>Claude Code</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th>一言でいうと</th>
+        <td class="oneword">資料と指示を覚える<br>専用作業部屋</td>
+        <td class="oneword">会話から生まれる<br>共有できる成果物</td>
+        <td class="oneword">PC作業を任せる<br>デスクトップ代理人</td>
+        <td class="oneword">コードを書き直す<br>開発エージェント</td>
+      </tr>
+      <tr>
+        <th>主な用途・<br>解ける課題</th>
+        <td>同じ資料・前提を毎回説明し直す手間の排除。チャットの整理。チームでの知識共有</td>
+        <td>文書・図・Webアプリ・ダッシュボード等の作成と反復編集。リンク1つでの公開・共有。他人の作品のコピー改変（カスタマイズ）</td>
+        <td>ローカルファイルの整理・変換、Excel/PPT/レポート等の作成、複数ステップ作業の自動実行、定期タスク</td>
+        <td>機能実装、バグ修正、リファクタリング、テスト作成、Git操作、コードベースの質問応答</td>
+      </tr>
+      <tr>
+        <th>想定ユーザー</th>
+        <td>全ユーザー（非エンジニア含む）</td>
+        <td>全ユーザー（コード不要でアプリも作れる）</td>
+        <td>非エンジニアのナレッジワーカー中心（仕組みはClaude Codeと同じ）</td>
+        <td>エンジニア・開発者（ターミナル操作が前提）</td>
+      </tr>
+      <tr>
+        <th>動作環境・前提</th>
+        <td>ブラウザ／デスクトップ／モバイル。<span class="pill">全プラン</span>（RAGによる大容量ナレッジ拡張は有料プランのみ）</td>
+        <td>ブラウザ／デスクトップ／モバイル。<span class="pill">全プラン</span>（AIアプリ実行・永続ストレージ等の一部機能は有料プラン）</td>
+        <td><span class="pill">デスクトップアプリ必須</span>（macOS / Windows）。<span class="pill">有料プラン</span>（Pro/Max/Team/Enterprise）。作業中はアプリを開いたままにする必要あり</td>
+        <td><span class="pill">ターミナル</span>が基本（Web版・IDE連携・デスクトップ等もあり）。有料プランまたはConsole（API）アカウント。npm利用時はNode.js 18+（ネイティブインストーラなら不要）</td>
+      </tr>
+      <tr>
+        <th>成果物の形</th>
+        <td>整理された会話＋プロジェクト内に蓄積される知識（成果物自体は会話やArtifacts）</td>
+        <td>チャット横の専用ウィンドウに表示される単体コンテンツ（文書/コード/React・HTMLアプリ/SVG/図）。URLで公開可</td>
+        <td>ローカルPC上の実ファイル（Excel・PowerPoint・整理済みフォルダ・レポート等）</td>
+        <td>リポジトリへのコード変更・コミット・PR、CLI上の回答</td>
+      </tr>
+      <tr>
+        <th>他機能との関係</th>
+        <td>Project内のチャットでもArtifactsは生成可能。Coworkにも別途「プロジェクト」機能あり（ローカル保存・別物）</td>
+        <td>Chat/Project内で生成。CoworkにはWeb公開でなくローカル常駐型の「ライブアーティファクト」が別途存在</td>
+        <td>Claude Codeと同じエージェント基盤をGUI化したもの。チャットのProjectをCoworkプロジェクトへ移行可能</td>
+        <td>Coworkの土台技術。MCPで外部ツール（Drive/Slack等）とも接続可</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="note" style="margin-top:12px;">出典：support.claude.com（What are projects? / What are artifacts? / Get started with Claude Cowork）、code.claude.com/docs（Claude Code Quickstart）。プラン条件・対応OSは変更されうるため導入時に公式で再確認を推奨。</p>
+</section>
+
+<!-- ============ 2. フローチャート ============ -->
+<section class="card" id="flowchart">
+  <span class="eyebrow">SECTION 2</span>
+  <h2 class="card-title">選択フローチャート：結局どれをいつ使うか</h2>
+  <p class="card-lead">迷ったら上から3つの質問に答えるだけ。判断軸は「①コードか ②PC上の実ファイルか ③繰り返すか／配るか」。</p>
+  <svg viewBox="0 0 1160 560" width="100%" role="img" aria-label="機能選択フローチャート">
+    <defs>
+      <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto">
+        <path d="M0,0 L8,4 L0,8 z" fill="#1E3A8A"/>
+      </marker>
+    </defs>
+    <!-- Q1 -->
+    <rect x="430" y="20" width="300" height="64" rx="10" fill="#1E3A8A"/>
+    <text x="580" y="47" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">Q1. コードを書く・直すのが目的？</text>
+    <text x="580" y="70" text-anchor="middle" fill="#C7D2FE" font-size="13">（リポジトリ・開発作業）</text>
+    <!-- Q1 yes -> Claude Code -->
+    <line x1="730" y1="52" x2="930" y2="52" stroke="#1E3A8A" stroke-width="2.5" marker-end="url(#arr)"/>
+    <text x="830" y="42" text-anchor="middle" fill="#2563EB" font-size="14" font-weight="700">YES</text>
+    <rect x="940" y="22" width="190" height="60" rx="10" fill="#2563EB"/>
+    <text x="1035" y="48" text-anchor="middle" fill="#fff" font-size="18" font-weight="800">Claude Code</text>
+    <text x="1035" y="70" text-anchor="middle" fill="#DBEAFE" font-size="12.5">ターミナル／IDEで委任</text>
+    <!-- Q1 -> Q2 -->
+    <line x1="580" y1="84" x2="580" y2="140" stroke="#1E3A8A" stroke-width="2.5" marker-end="url(#arr)"/>
+    <text x="600" y="118" fill="#64748B" font-size="14" font-weight="700">NO</text>
+    <!-- Q2 -->
+    <rect x="400" y="145" width="360" height="64" rx="10" fill="#1E3A8A"/>
+    <text x="580" y="172" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">Q2. PC上のファイル操作や複数ステップの</text>
+    <text x="580" y="195" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">実作業を「任せたい」？</text>
+    <!-- Q2 yes -> Cowork -->
+    <line x1="760" y1="177" x2="930" y2="177" stroke="#1E3A8A" stroke-width="2.5" marker-end="url(#arr)"/>
+    <text x="845" y="167" text-anchor="middle" fill="#2563EB" font-size="14" font-weight="700">YES</text>
+    <rect x="940" y="147" width="190" height="60" rx="10" fill="#2563EB"/>
+    <text x="1035" y="173" text-anchor="middle" fill="#fff" font-size="18" font-weight="800">Cowork</text>
+    <text x="1035" y="195" text-anchor="middle" fill="#DBEAFE" font-size="12.5">デスクトップで作業委任</text>
+    <!-- Q2 -> Q3 -->
+    <line x1="580" y1="209" x2="580" y2="265" stroke="#1E3A8A" stroke-width="2.5" marker-end="url(#arr)"/>
+    <text x="600" y="243" fill="#64748B" font-size="14" font-weight="700">NO</text>
+    <!-- Q3 -->
+    <rect x="400" y="270" width="360" height="64" rx="10" fill="#1E3A8A"/>
+    <text x="580" y="297" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">Q3. 同じ資料・指示・前提で</text>
+    <text x="580" y="320" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">何度も会話を繰り返す？</text>
+    <!-- Q3 yes -> Project -->
+    <line x1="760" y1="302" x2="930" y2="302" stroke="#1E3A8A" stroke-width="2.5" marker-end="url(#arr)"/>
+    <text x="845" y="292" text-anchor="middle" fill="#2563EB" font-size="14" font-weight="700">YES</text>
+    <rect x="940" y="272" width="190" height="60" rx="10" fill="#2563EB"/>
+    <text x="1035" y="298" text-anchor="middle" fill="#fff" font-size="18" font-weight="800">Project</text>
+    <text x="1035" y="320" text-anchor="middle" fill="#DBEAFE" font-size="12.5">知識＋指示を常設</text>
+    <!-- Q3 -> Q4 -->
+    <line x1="580" y1="334" x2="580" y2="390" stroke="#1E3A8A" stroke-width="2.5" marker-end="url(#arr)"/>
+    <text x="600" y="368" fill="#64748B" font-size="14" font-weight="700">NO</text>
+    <!-- Q4 -->
+    <rect x="400" y="395" width="360" height="64" rx="10" fill="#1E3A8A"/>
+    <text x="580" y="422" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">Q4. 編集・共有できる単体の成果物</text>
+    <text x="580" y="445" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">（文書・図・アプリ）が欲しい？</text>
+    <!-- Q4 yes -> Artifacts -->
+    <line x1="760" y1="427" x2="930" y2="427" stroke="#1E3A8A" stroke-width="2.5" marker-end="url(#arr)"/>
+    <text x="845" y="417" text-anchor="middle" fill="#2563EB" font-size="14" font-weight="700">YES</text>
+    <rect x="940" y="397" width="190" height="60" rx="10" fill="#2563EB"/>
+    <text x="1035" y="423" text-anchor="middle" fill="#fff" font-size="18" font-weight="800">Artifacts</text>
+    <text x="1035" y="445" text-anchor="middle" fill="#DBEAFE" font-size="12.5">作る・直す・公開する</text>
+    <!-- Q4 no -> normal chat -->
+    <line x1="580" y1="459" x2="580" y2="505" stroke="#1E3A8A" stroke-width="2.5" marker-end="url(#arr)"/>
+    <text x="600" y="488" fill="#64748B" font-size="14" font-weight="700">NO</text>
+    <rect x="465" y="510" width="230" height="44" rx="22" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="2"/>
+    <text x="580" y="538" text-anchor="middle" fill="#1E293B" font-size="16" font-weight="700">通常チャットで十分</text>
+    <!-- left annotations -->
+    <rect x="20" y="145" width="330" height="190" rx="10" fill="#EFF6FF" stroke="#2563EB" stroke-width="1.5"/>
+    <text x="40" y="175" fill="#1E3A8A" font-size="14.5" font-weight="700">補足：組み合わせが基本</text>
+    <text x="40" y="203" fill="#1E293B" font-size="13.5">・Projectの中でArtifactsを作るのが定番</text>
+    <text x="40" y="228" fill="#1E293B" font-size="13.5">・Cowork＝Claude Codeの非エンジニア版</text>
+    <text x="40" y="253" fill="#1E293B" font-size="13.5">・「会話で答えが出る」ならChat、</text>
+    <text x="40" y="276" fill="#1E293B" font-size="13.5">　「作業して納品してほしい」ならCowork</text>
+    <text x="40" y="306" fill="#64748B" font-size="12.5">※Cowork/Claude Codeは有料プラン前提</text>
+  </svg>
+</section>
+
+<!-- ============ タブバー ============ -->
+<nav class="tabbar" id="tabs">
+  <button id="btn-chat" class="active" onclick="openTab('chat')">タブ①　Chat（Project・Artifacts）</button>
+  <button id="btn-cowork" onclick="openTab('cowork')">タブ②　Cowork</button>
+  <button id="btn-code" onclick="openTab('code')">タブ③　Claude Code</button>
 </nav>
 
-<!-- ===== OVERVIEW ===== -->
-<section class="section" id="overview">
-  <div class="container">
-    <span class="eyebrow">OVERVIEW</span>
-    <h2 class="sec-title">4機能の一言まとめ</h2>
-    <p class="sec-lead">まず「何ができる機能なのか」を1行で把握する。詳細は各機能の解説セクションで確認しよう。</p>
+<!-- ==================== タブ① Chat ==================== -->
+<div class="tabpanel active panel-frame" id="panel-chat">
 
-    <div class="feature-grid">
-      <div class="feature-card">
-        <div class="fc-icon">📁</div>
-        <h3>Project</h3>
-        <span class="fc-tag">資料と指示を覚える専用作業部屋</span>
-        <p>同じ資料・前提で繰り返し会話するための機能。ナレッジ（参照ファイル）とカスタム指示を一度設定すれば、毎回の説明が不要になる。</p>
-        <p><strong>誰向け：</strong>全ユーザー（非エンジニア含む）</p>
-      </div>
-      <div class="feature-card">
-        <div class="fc-icon">🧩</div>
-        <h3>Artifacts</h3>
-        <span class="fc-tag">会話から生まれる共有できる成果物</span>
-        <p>チャットで依頼した文書・コード・図・WebアプリをチャットサイドのウィンドウにArtifactとして生成。会話で反復編集し、URLで公開・共有できる。</p>
-        <p><strong>誰向け：</strong>全ユーザー（コード不要でアプリも作れる）</p>
-      </div>
-      <div class="feature-card">
-        <div class="fc-icon">🛠</div>
-        <h3>Cowork</h3>
-        <span class="fc-tag">PC作業を任せるデスクトップ代理人</span>
-        <p>ローカルファイルの整理・変換、Excel/PPT作成、複数ステップ作業の自動実行など「作業」を丸ごと委任する機能。デスクトップアプリ必須。</p>
-        <p><strong>誰向け：</strong>非エンジニアのナレッジワーカー中心</p>
-      </div>
-      <div class="feature-card">
-        <div class="fc-icon">⌨</div>
-        <h3>Claude Code</h3>
-        <span class="fc-tag">コードを書き直す開発エージェント</span>
-        <p>ターミナル上でリポジトリを直接読み書きする開発エージェント。機能実装・バグ修正・テスト作成・Git操作まで自律的に実行する。</p>
-        <p><strong>誰向け：</strong>エンジニア・開発者（ターミナル操作が前提）</p>
-      </div>
-    </div>
-
-    <!-- 比較表 -->
-    <h3 style="font-size:20px;font-weight:700;color:var(--navy);margin-bottom:16px;">機能比較表</h3>
-    <div class="table-wrap">
-      <table class="cmp">
-        <thead>
-          <tr>
-            <th></th>
-            <th>Project</th>
-            <th>Artifacts</th>
-            <th>Cowork</th>
-            <th>Claude Code</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th>主な用途</th>
-            <td>同じ資料・前提での反復会話、知識の整理・共有</td>
-            <td>文書・図・Webアプリの作成と反復編集・公開</td>
-            <td>ローカルファイル操作、複数ステップ作業の自動実行</td>
-            <td>機能実装、バグ修正、リファクタリング、Git操作</td>
-          </tr>
-          <tr>
-            <th>動作環境</th>
-            <td>ブラウザ・モバイル・デスクトップ<br><span class="pill">全プラン</span></td>
-            <td>ブラウザ・モバイル・デスクトップ<br><span class="pill">全プラン</span></td>
-            <td><span class="pill">デスクトップアプリ必須</span><br><span class="pill">有料プランのみ</span></td>
-            <td><span class="pill">ターミナル</span>が基本<br><span class="pill">有料プランまたはAPI</span></td>
-          </tr>
-          <tr>
-            <th>成果物</th>
-            <td>整理された会話＋蓄積知識</td>
-            <td>文書・コード・図・アプリ（URL公開可）</td>
-            <td>ローカルPCの実ファイル（Excel・フォルダ等）</td>
-            <td>コード変更・コミット・PR</td>
-          </tr>
-          <tr>
-            <th>注意点</th>
-            <td>PCフォルダを直接読まない（手動アップロード必要）</td>
-            <td>ローカルPCにファイルを書き込まない</td>
-            <td>PC/アプリを起動したままにする必要あり</td>
-            <td>Git管理下で使うことを強く推奨</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- 判断フロー -->
-    <h3 style="font-size:20px;font-weight:700;color:var(--navy);margin:32px 0 16px;">どれを使うか迷ったら → 3つの質問</h3>
-    <div class="flow-steps">
-      <div class="flow-step">
-        <b>Q1</b>
-        コードを書く・直すのが目的？<br>
-        <strong>YES → Claude Code</strong>
-      </div>
-      <div class="flow-step">
-        <b>Q2</b>
-        PC上のファイル操作や複数ステップの実作業を任せたい？<br>
-        <strong>YES → Cowork</strong>
-      </div>
-      <div class="flow-step">
-        <b>Q3</b>
-        同じ資料・指示で何度も会話を繰り返す？<br>
-        <strong>YES → Project</strong>
-      </div>
-      <div class="flow-step">
-        <b>Q4</b>
-        編集・共有できる単体の成果物が欲しい？<br>
-        <strong>YES → Artifacts</strong>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== PROJECT ===== -->
-<section class="section" id="project">
-  <div class="container">
-    <span class="eyebrow">FEATURE 1</span>
-    <h2 class="sec-title">📁 Project — 資料と指示を覚えさせる</h2>
-    <p class="sec-lead">毎回同じ資料を添付・説明し直す手間をなくす機能。一度設定すれば以後のチャット品質を自動で底上げする。</p>
-
-    <h3 style="font-size:18px;font-weight:700;color:var(--navy);margin-bottom:14px;">できること</h3>
-    <ul style="padding-left:22px;margin-bottom:24px;font-size:15px;">
-      <li style="margin-bottom:8px;">PDFやテキストファイルをナレッジとしてアップロードし、常時参照させる</li>
-      <li style="margin-bottom:8px;">カスタム指示でプロジェクト内の全チャットに口調・役割・出力形式を固定</li>
-      <li style="margin-bottom:8px;">チャットをプロジェクト単位で整理・管理</li>
-      <li style="margin-bottom:8px;">Team/Enterpriseプランでは部署全員とプロジェクトを共有</li>
-      <li style="margin-bottom:8px;">有料プランではナレッジが上限に近づくとRAG（必要箇所だけ参照）が自動有効化され、容量が最大約10倍に拡張</li>
-    </ul>
-
-    <h3 style="font-size:18px;font-weight:700;color:var(--navy);margin-bottom:14px;">作成方法（3ステップ）</h3>
-    <ol style="padding-left:22px;font-size:15px;margin-bottom:24px;">
-      <li style="margin-bottom:10px;"><strong>サイドバー「プロジェクト」→「新規プロジェクト」</strong>をクリック</li>
-      <li style="margin-bottom:10px;"><strong>名前を付けて作成</strong>（例：「2026年度 採用業務」）</li>
-      <li style="margin-bottom:10px;"><strong>ナレッジにファイルをアップロード</strong>し、<strong>指示欄に共通ルール</strong>を記載（例：「必ずナレッジの該当箇所を根拠として示す」）</li>
-    </ol>
-
-    <div class="tips-box">
-      <h4>💡 コツと注意点</h4>
+<section class="card" id="tab-chat">
+  <span class="eyebrow">タブ① Chat — 概要</span>
+  <h2 class="card-title">Project と Artifacts：日常のチャットを「資産化」する2機能</h2>
+  <p><b>Project</b>＝チャットの「専用作業部屋」。関連資料（<span class="term">ナレッジ</span>：プロジェクトにアップロードした参照ファイル群）と<span class="term">カスタム指示</span>（そのプロジェクト内の全チャットに適用される指示文）を一度設定すれば、毎回の説明が不要になる。</p>
+  <p><b>Artifacts</b>＝会話から生まれる「単体の成果物」。一定以上のまとまった文書・コード・図・Webアプリをチャット横の専用ウィンドウに表示し、会話で繰り返し編集できる。公開リンクで配布でき、他人の公開Artifactは「Customize（カスタマイズ）」で自分のコピーを作って改変できる。</p>
+  <div class="grid2">
+    <div class="box can">
+      <h4>できること</h4>
       <ul>
-        <li>ナレッジは「関係資料を全部入れる」より、ブランドガイド・要件・FAQ など5〜6点に絞る方が回答精度が安定しやすい</li>
-        <li>ナレッジは自動更新されない。資料改訂のたびに差し替える運用ルールを決めておく</li>
-        <li>Project は <strong>PCフォルダを直接読まない</strong>。ファイルは手動アップロードが必要（ファイル操作はCoworkの領分）</li>
-        <li>Team/Enterpriseプランでない場合は原則自分専用（他のメンバーとの共有不可）</li>
+        <li><b>Project</b>：資料アップロード／プロジェクト単位の指示設定／チャット整理／Team・Enterpriseでのプロジェクト共有／ナレッジが大きい場合のRAG自動拡張（有料プラン、最大約10倍）</li>
+        <li><b>Artifacts</b>：文書・コード・HTML/Reactアプリ・SVG・Mermaid図の生成と反復編集／バージョン切替／公開（Publish）・組織内共有（Share）／他人の作品のCustomizeによるコピー改変／AI搭載アプリ化・MCP連携・永続ストレージ（一部は有料プラン）</li>
+      </ul>
+    </div>
+    <div class="box cant">
+      <h4>できないこと（誤解しやすい点）</h4>
+      <ul>
+        <li>ProjectはPC内のフォルダを直接読まない。ファイルは手動アップロードが必要（直接操作はCoworkの領分）</li>
+        <li>ArtifactsはローカルPCにファイルを書き込まない。成果物はブラウザ上の表示＋ダウンロード</li>
+        <li>他人があなたの公開Artifactを「Customize」しても、<b>元のArtifactは変更されない</b>（相手側にコピーが作られる）</li>
+        <li>Project共有はTeam/Enterpriseプランの機能。個人プランでは原則自分専用</li>
       </ul>
     </div>
   </div>
 </section>
 
-<!-- ===== ARTIFACTS ===== -->
-<section class="section" id="artifacts">
-  <div class="container">
-    <span class="eyebrow">FEATURE 2</span>
-    <h2 class="sec-title">🧩 Artifacts — 会話の結果を「配れる形」にする</h2>
-    <p class="sec-lead">一定以上の分量の文書・コード・図・WebアプリをチャットサイドのウィンドウにArtifactとして表示。会話で繰り返し編集し、URLで公開できる。</p>
+<section class="card">
+  <span class="eyebrow">タブ① Chat — 始め方</span>
+  <h2 class="card-title">Projectの作成方法（3ステップ）</h2>
+  <ol class="steps">
+    <li><b>サイドバーから「プロジェクト」を開く</b>：claude.ai 左サイドバーの「プロジェクト」をクリックし、「新規プロジェクト」ボタンを押す。</li>
+    <li><b>名前と説明を入力して作成</b>：用途が分かる名前（例：「2026年度 採用業務」）を付ける。</li>
+    <li><b>ナレッジとカスタム指示を設定</b>：プロジェクト画面右側の「ナレッジ」にPDF・テキスト・コード等をアップロードし、「指示を設定」で口調・役割・出力形式を指定。以後このプロジェクト内の全チャットに自動適用される。</li>
+  </ol>
 
-    <h3 style="font-size:18px;font-weight:700;color:var(--navy);margin-bottom:14px;">生成できるコンテンツタイプ</h3>
-    <ul style="padding-left:22px;margin-bottom:24px;font-size:15px;">
-      <li style="margin-bottom:8px;">文書（Markdown・構造化テキスト）</li>
-      <li style="margin-bottom:8px;">コード（各種言語）</li>
-      <li style="margin-bottom:8px;">HTML/Reactアプリ（ブラウザ上で動くWebアプリ）</li>
-      <li style="margin-bottom:8px;">SVGグラフィック・Mermaidダイアグラム</li>
+  <div class="mock">
+    <div class="mock-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="mock-url">claude.ai/projects</span></div>
+    <div class="mock-body">
+      <div class="mock-side">
+        <div class="side-item">＋ 新規チャット</div>
+        <div class="side-item sel">📁 プロジェクト<span class="badge on">①</span></div>
+        <div class="side-item">🕘 履歴</div>
+        <div class="side-item">⚙ 設定</div>
+      </div>
+      <div class="mock-main">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <b style="font-size:16px;">プロジェクト一覧</b>
+          <span class="mock-btn">＋ 新規プロジェクト<span class="badge on">②</span></span>
+        </div>
+        <div class="mock-input" style="margin-top:18px;">プロジェクト名：2026年度 採用業務</div>
+        <div class="mock-input">説明：採用要件・面接評価基準に基づき回答する</div>
+        <span class="mock-btn">作成する</span><span class="callout">名前→作成でOK</span>
+      </div>
+      <div class="mock-panel-right">
+        <b style="font-size:13.5px;color:#1E3A8A;">プロジェクトナレッジ<span style="position:relative;"><span class="badge on" style="top:-18px;">③</span></span></b>
+        <div class="mock-input" style="text-align:center;border-style:dashed;">＋ ファイルをアップロード<br><span style="font-size:11.5px;">採用要件.pdf ／ 評価基準.docx</span></div>
+        <div class="mock-input">✎ 指示を設定：常に丁寧語、結論から書く…</div>
+      </div>
+    </div>
+  </div>
+  <p class="mock-caption">これは説明用の模式図です（実際の画面ではありません）。①サイドバー「プロジェクト」→②「新規プロジェクト」→③ナレッジ・指示の設定。</p>
+  <div class="shot-placeholder">ここに実際のスクリーンショットを配置：プロジェクト作成画面（ナレッジ・指示設定を含む）<small>claude.ai → プロジェクト → 新規プロジェクト</small></div>
+  <p class="note">※ナレッジ容量はコンテキスト約200Kトークン相当が目安。有料プラン（Pro/Max/Team/Enterprise）ではナレッジが上限に近づくと<span class="term">RAG</span>（必要箇所だけ検索して参照する仕組み）が自動で有効化され、容量が最大約10倍に拡張される。</p>
+</section>
+
+<section class="card">
+  <span class="eyebrow">タブ① Chat — 始め方</span>
+  <h2 class="card-title">Artifactsの作成・公開・カスタマイズ（3ステップ）</h2>
+  <ol class="steps">
+    <li><b>チャットで「作って」と頼むだけ</b>：まとまった文書・コード・アプリを依頼すると、Claudeが自動でArtifactとして右側の専用ウィンドウに生成する（明示的に「Artifactで」と頼んでもよい）。</li>
+    <li><b>会話で編集を繰り返す</b>：「3章を短く」「ボタンを青に」のように指示すると、Artifactが更新される。バージョンは切り替えて比較できる。</li>
+    <li><b>公開・共有・カスタマイズ</b>：Artifactウィンドウの「公開（Publish）」でリンク発行（Free/Pro/Max）。Team/Enterpriseは組織内共有（Share）。他人の公開Artifactは「Customize」ボタンで自分のコピーを作成し、会話で改変できる。</li>
+  </ol>
+
+  <div class="mock">
+    <div class="mock-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="mock-url">claude.ai/chat/…</span></div>
+    <div class="mock-body">
+      <div class="mock-main" style="border-right:1px solid #CBD5E1;">
+        <p style="color:#64748B;font-size:13px;">あなた：</p>
+        <div class="mock-input">経費精算の手順書をArtifactで作って<span class="badge on">①</span></div>
+        <p style="color:#64748B;font-size:13px;margin-top:14px;">あなた（2回目）：</p>
+        <div class="mock-input">3章を箇条書きに直して<span class="badge on">②</span></div>
+      </div>
+      <div class="mock-panel-right" style="width:48%;background:#fff;">
+        <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #CBD5E1;padding-bottom:8px;">
+          <b style="font-size:13.5px;">📄 経費精算手順書 <span style="color:#64748B;font-weight:400;">v2</span></b>
+          <span class="mock-btn" style="font-size:12px;padding:5px 12px;">公開<span class="badge on">③</span></span>
+        </div>
+        <p style="font-size:12.5px;color:#64748B;margin-top:10px;">（Artifactの内容がここに表示され、指示のたびに更新される）</p>
+        <div style="border:1px solid #CBD5E1;border-radius:6px;padding:8px 10px;font-size:12px;color:#64748B;">1. 申請の流れ<br>2. 領収書の要件<br>3. 提出期限 …</div>
+      </div>
+    </div>
+  </div>
+  <p class="mock-caption">これは説明用の模式図です。①依頼→右側に生成、②会話で反復編集、③「公開」でリンク発行。他人の公開Artifactでは「Customize」が表示される。</p>
+  <div class="shot-placeholder">ここに実際のスクリーンショットを配置：Artifactウィンドウ（公開ボタン・バージョン表示を含む）<small>任意のチャットでArtifact生成後の画面</small></div>
+</section>
+
+<section class="card">
+  <span class="eyebrow">タブ① Chat — 活用シナリオ 1/2</span>
+  <h2 class="card-title">シナリオA：Projectに資料を読み込ませ、繰り返し質問する業務</h2>
+  <div class="scenario-flow">
+    <div class="sf"><b>課題</b>就業規則・製品仕様などへの問い合わせ対応で、毎回同じ資料を添付・説明し直している。回答の前提もチャットごとにブレる。</div>
+    <span class="sf-arrow">→</span>
+    <div class="sf"><b>打ち手</b>規程・FAQをProjectナレッジに一度だけ登録し、回答ルールをカスタム指示に固定。以後は質問を投げるだけ。</div>
+    <span class="sf-arrow">→</span>
+    <div class="sf"><b>成果物</b>資料に基づく一貫した回答が即時に得られる継続運用環境。チームプランなら部署全員で同じ部屋を共有。</div>
+  </div>
+  <h4>操作手順</h4>
+  <ol class="steps">
+    <li><b>Projectを作成</b>し、ナレッジに「就業規則.pdf」「FAQ.xlsx」等をアップロード。</li>
+    <li><b>カスタム指示に回答ルールを記載</b>：「必ずナレッジ内の該当箇所を引用し、規定がない場合は『規定なし』と明示する」。</li>
+    <li><b>プロジェクト内で新規チャットを開始</b>し、質問する（例：「育休の申請期限は？」）。次回以降も同じプロジェクト内でチャットを始めれば、設定は自動で引き継がれる。</li>
+  </ol>
+  <div class="mock">
+    <div class="mock-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="mock-url">claude.ai/project/採用業務</span></div>
+    <div class="mock-body" style="min-height:180px;">
+      <div class="mock-side">
+        <div class="side-item sel">📁 2026年度 採用業務</div>
+        <div class="side-item" style="padding-left:22px;">└ 5/12 面接質問案</div>
+        <div class="side-item" style="padding-left:22px;">└ 6/02 要件確認</div>
+      </div>
+      <div class="mock-main">
+        <div class="mock-input">このプロジェクトで質問する…<span class="badge on">③</span></div>
+        <p style="font-size:12.5px;color:#64748B;">↑ ナレッジ（①でアップ済）と指示（②で設定済）が毎回自動で効く</p>
+      </div>
+      <div class="mock-panel-right">
+        <b style="font-size:13px;color:#1E3A8A;">ナレッジ</b>
+        <p style="font-size:12.5px;">📄 就業規則.pdf<span class="badge on" style="position:relative;top:0;right:-6px;">①</span><br>📄 FAQ.xlsx</p>
+        <b style="font-size:13px;color:#1E3A8A;">指示<span style="position:relative;"><span class="badge on" style="top:-14px;">②</span></span></b>
+        <p style="font-size:12px;color:#64748B;">該当箇所を引用して回答…</p>
+      </div>
+    </div>
+  </div>
+  <p class="mock-caption">これは説明用の模式図です。プロジェクト内チャットはナレッジ・指示を常時参照する。</p>
+  <div class="shot-placeholder">ここに実際のスクリーンショットを配置：プロジェクト内でのチャット画面（右側にナレッジ一覧が見える状態）</div>
+</section>
+
+<section class="card">
+  <span class="eyebrow">タブ① Chat — 活用シナリオ 2/2</span>
+  <h2 class="card-title">シナリオB：Artifactsで作った成果物を編集・反復し、配布する</h2>
+  <div class="scenario-flow">
+    <div class="sf"><b>課題</b>新人向けツールの使い方ガイドを作りたいが、Word往復の修正に時間がかかり、配布後の更新も面倒。</div>
+    <span class="sf-arrow">→</span>
+    <div class="sf"><b>打ち手</b>ArtifactsでHTMLガイド（または簡易Webアプリ）を生成し、会話で修正を反復。完成版を公開リンクで配布。</div>
+    <span class="sf-arrow">→</span>
+    <div class="sf"><b>成果物</b>URL1つで全員が見られるガイド。受け取った側は「Customize」で自部署向けに改変したコピーも作れる。</div>
+  </div>
+  <h4>操作手順</h4>
+  <ol class="steps">
+    <li><b>生成</b>：「新人向けの〇〇操作ガイドを、目次付きHTMLのArtifactで作って」と依頼。</li>
+    <li><b>反復編集</b>：「専門用語に注釈を」「手順4に注意書きを追加」と会話で修正。版を比較しながら仕上げる。</li>
+    <li><b>公開</b>：Artifactウィンドウ右上の「公開」をクリック→発行されたリンクを共有。Team/Enterpriseでは組織内のみの共有が可能。配布をやめたいときは公開済みタブから取り下げ（unpublish）できる。</li>
+  </ol>
+  <div class="shot-placeholder">ここに実際のスクリーンショットを配置：Artifactの公開ダイアログ（リンク発行画面）</div>
+  <div class="tips">
+    <h4>注意点・つまずきポイント・コツ（Chatタブ）</h4>
+    <ul>
+      <li><b>短い回答はArtifactにならない</b>：単体で意味を持つ、ある程度の分量のコンテンツが対象。短文なら通常の返答になる。</li>
+      <li><b>公開＝そのバージョンのコードも公開</b>：公開時は表示内容と関連コードが見える状態になる。機密情報を含む版を公開しない。</li>
+      <li><b>Projectナレッジは「厳選」が効く</b>：関係資料を全部入れるより、ブランドガイド・要件・スタイル指針など5〜6点に絞る方が回答精度が安定しやすい。</li>
+      <li><b>古い資料の放置に注意</b>：ナレッジは自動更新されない。改訂のたびに差し替える運用ルールを決める。</li>
+      <li><b>エラーが出たら「Try fixing with Claude」</b>：Artifactの実行エラーはボタン1つでエラー内容をClaudeに渡して修正を試せる（成功は保証されない）。</li>
     </ul>
+  </div>
+</section>
 
-    <h3 style="font-size:18px;font-weight:700;color:var(--navy);margin-bottom:14px;">作成・公開・カスタマイズ（3ステップ）</h3>
-    <ol style="padding-left:22px;font-size:15px;margin-bottom:24px;">
-      <li style="margin-bottom:10px;"><strong>チャットで依頼するだけ</strong>：「手順書をHTMLのArtifactで作って」と指示すると自動的に右側ウィンドウに生成される</li>
-      <li style="margin-bottom:10px;"><strong>会話で反復編集</strong>：「3章を箇条書きに」「ボタンを青に変えて」など指示のたびにArtifactが更新される。バージョンを切り替えて比較も可能</li>
-      <li style="margin-bottom:10px;"><strong>公開（Publish）・共有（Share）</strong>：Artifactウィンドウ上部の「公開」ボタンでURLを発行。他者の公開ArtifactはCustomizeボタンで自分のコピーを作れる</li>
-    </ol>
-
-    <div class="tips-box">
-      <h4>💡 コツと注意点</h4>
+<section class="card exercise">
+  <div class="ex-head">
+    <span class="eyebrow" style="margin-bottom:0;">タブ① Chat — 演習</span>
+    <span class="ex-timer">⏱ 今日の10分</span>
+  </div>
+  <h2 class="card-title">演習：Projectを1つ作り、その中でArtifactを1つ生成する</h2>
+  <div class="ex-goal"><b>ゴール：</b>「資料を覚えさせた部屋で、配れる成果物を作る」という基本動線を、自分の実データで1往復体験する。読むだけで終わらせないための最小タスク。</div>
+  <div class="ex-grid">
+    <div>
+      <h4>手順</h4>
+      <ol class="steps">
+        <li><b>素材を1つ選ぶ</b>：直近1ヶ月で2回以上参照した資料（規程・仕様書・議事録など）を1つだけ選ぶ。複数入れない。</li>
+        <li><b>Projectを作る</b>：サイドバー「プロジェクト」→新規作成→選んだ資料をナレッジにアップロード→指示欄に1行だけ書く（例：「回答時は必ずナレッジの該当箇所を根拠として示す」）。</li>
+        <li><b>プロジェクト内でArtifactを依頼</b>：「この資料の要点を、新メンバー向けの1枚HTMLサマリーとしてArtifactで作って」→ 生成後に「見出しを1つ増やして」と修正指示を1回出す。</li>
+      </ol>
+      <h4>完了条件（2つチェックできたら終了）</h4>
+      <ul class="checklist">
+        <li>プロジェクト内チャットが、アップロードした資料の中身を踏まえて回答している</li>
+        <li>右側のArtifactが、修正指示で実際に更新された（バージョンが進んだ）</li>
+      </ul>
+    </div>
+    <div class="ex-stuck">
+      <h4>つまずいたら</h4>
       <ul>
-        <li><strong>短い回答はArtifactにならない</strong>。単体で意味を持つ、ある程度の分量が必要。明示的に「Artifactとして作って」と伝えると確実</li>
-        <li><strong>公開するとコードも見える状態になる</strong>。機密情報を含む版を公開しない</li>
-        <li>他者がCustomizeしても元のArtifactは変更されない（相手側にコピーが作られるだけ）</li>
-        <li>エラーが出たら「Try fixing with Claude」ボタンでエラー内容を渡して修正を試せる</li>
-        <li>Artifactはローカルファイルには書き込まない（ブラウザ上の表示＋ダウンロードのみ）</li>
+        <li><b>資料の内容を参照してくれない</b> → ファイルが大きすぎる可能性。該当章だけ抜き出して再アップロード。</li>
+        <li><b>Artifactにならず本文に出力される</b> → 「Artifactとして作って」と明示する。短すぎる依頼はArtifact化されない。</li>
+        <li><b>指示が効いていない気がする</b> → 指示はプロジェクト内の<b>新規チャット</b>から適用される。既存チャットではなく新しく開始する。</li>
+      </ul>
+      <p class="note" style="margin-top:10px;">5分で終わったら追加の1手：作ったArtifactを「公開」してリンクを自分宛てに送り、別端末・別ブラウザで開けることを確認する。</p>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<!-- ==================== タブ② Cowork ==================== -->
+<div class="tabpanel panel-frame" id="panel-cowork">
+
+<section class="card" id="tab-cowork">
+  <span class="eyebrow">タブ② Cowork — 概要</span>
+  <h2 class="card-title">Cowork：デスクトップでPC作業を「丸ごと任せる」</h2>
+  <p>Coworkは、Claude Codeと同じ<span class="term">エージェント基盤</span>（計画→実行→検証を自律的に繰り返す仕組み）を、ターミナル不要のClaude Desktopアプリ上で使えるようにした機能。プロンプトに1問1答で返すのではなく、「結果」を依頼して席を外し、完成した実ファイル（整形済み文書、整理されたフォルダ、Excel、PowerPoint等）を受け取る使い方が前提。</p>
+  <div class="grid2">
+    <div class="box can">
+      <h4>できること</h4>
+      <ul>
+        <li>ローカルファイルの直接読み書き（手動アップロード不要）</li>
+        <li>複数ステップ作業の分解・サブエージェントによる並列実行</li>
+        <li>数式入りExcel、スライド、整形文書などの成果物生成</li>
+        <li>長時間タスクの継続実行（通常チャットのような会話タイムアウトに縛られない）</li>
+        <li><code>/schedule</code> による定期タスク（例：毎朝のブリーフィング）</li>
+        <li>Cowork内プロジェクト：関連タスクをファイル・指示・メモリ付きのワークスペースに整理（ローカル保存）</li>
+        <li>Pro/Maxはモバイルからタスクを投げ、デスクトップ側で実行させることも可能</li>
+      </ul>
+    </div>
+    <div class="box cant">
+      <h4>できないこと・前提（誤解しやすい点）</h4>
+      <ul>
+        <li><b>デスクトップアプリ必須</b>（macOS/Windows）。Web・モバイル単体では動かない</li>
+        <li><b>有料プラン限定</b>（Pro/Max/Team/Enterprise）</li>
+        <li>アプリを閉じる・PCがスリープすると実行中タスクは停止する</li>
+        <li>セッション（チャット・成果物）の他者共有は不可。メモリはプロジェクト内のみ保持</li>
+        <li>通常チャットより使用量（usage）消費が大きい。単純な質問はChatで行うべき</li>
+        <li>実ファイルを変更できる＝リスクも実在。機密フォルダへのアクセス付与は避け、削除は明示許可制</li>
       </ul>
     </div>
   </div>
 </section>
 
-<!-- ===== COWORK ===== -->
-<section class="section" id="cowork">
-  <div class="container">
-    <span class="eyebrow">FEATURE 3</span>
-    <h2 class="sec-title">🛠 Cowork — PC作業を「丸ごと任せる」</h2>
-    <p class="sec-lead">Claude Codeと同じエージェント基盤をGUI化した機能。「相談」ではなく「作業」を委任し、完成したファイルを受け取る使い方が基本。</p>
+<section class="card">
+  <span class="eyebrow">タブ② Cowork — 始め方</span>
+  <h2 class="card-title">Coworkの始め方（3ステップ）</h2>
+  <ol class="steps">
+    <li><b>Claude Desktop（最新版）をインストールして開く</b>：claude.com/download から入手。有料プランでログインする。</li>
+    <li><b>モードセレクタで「Cowork」タブに切り替える</b>：画面上部の「Chat」と並ぶ「Cowork」をクリックすると、タスクモードに切り替わる。</li>
+    <li><b>タスクを記述し、対象フォルダを指定して実行</b>：「ダウンロードフォルダを種類別に整理して」のように成果を依頼。Claudeが提示する計画を確認してから走らせる。作業中もアプリは開いたままにする。</li>
+  </ol>
+  <div class="mock">
+    <div class="mock-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="mock-url">Claude Desktop（アプリ）</span></div>
+    <div class="mock-body">
+      <div class="mock-side">
+        <div class="side-item">💬 Chat</div>
+        <div class="side-item sel">🛠 Cowork<span class="badge on">②</span></div>
+        <div class="side-item">⏰ Scheduled</div>
+        <div class="side-item">📁 プロジェクト</div>
+        <div class="side-item" style="margin-top:30px;color:#94A3B8;">⬇ claude.com/download<span class="badge on" style="top:-10px;">①</span></div>
+      </div>
+      <div class="mock-main">
+        <b style="font-size:15px;">新しいタスク</b>
+        <div class="mock-input">ダウンロードフォルダを種類別・日付別に整理して、結果一覧をExcelで出して<span class="badge on">③</span></div>
+        <div style="display:flex;gap:8px;align-items:center;margin-top:6px;">
+          <span class="mock-btn ghost">📂 フォルダを選択：~/Downloads</span>
+          <span class="mock-btn">実行</span>
+          <span class="callout">計画を確認してから走らせる</span>
+        </div>
+        <p style="font-size:12.5px;color:#64748B;margin-top:12px;">⏳ 進捗：計画作成 → ファイル走査 → 分類 → Excel生成（各ステップが可視化される）</p>
+      </div>
+    </div>
+  </div>
+  <p class="mock-caption">これは説明用の模式図です。①最新版デスクトップアプリ→②Coworkタブ→③タスク記述と実行。</p>
+  <div class="shot-placeholder">ここに実際のスクリーンショットを配置：Claude DesktopのCowork（Tasks）画面<small>モードセレクタとタスク入力欄が見える状態</small></div>
+  <p class="note">※初期設定として、Settings &gt; Cowork の「Global instructions」に全タスク共通の指示（口調・出力形式・自分の役割）を登録できる。フォルダ単位の指示（Folder instructions）も設定可能。</p>
+</section>
 
-    <h3 style="font-size:18px;font-weight:700;color:var(--navy);margin-bottom:14px;">主な用途</h3>
-    <ul style="padding-left:22px;margin-bottom:24px;font-size:15px;">
-      <li style="margin-bottom:8px;">ローカルファイルの直接読み書き（手動アップロード不要）</li>
-      <li style="margin-bottom:8px;">複数ステップ作業の分解・並列実行（領収書OCR→集計→Excel化など）</li>
-      <li style="margin-bottom:8px;"><code>/schedule</code> による定期タスク（例：毎週金曜に週次報告を自動生成）</li>
-      <li style="margin-bottom:8px;">Coworkプロジェクト：ファイル・指示・メモリをワークスペースに整理（ローカル保存）</li>
+<section class="card">
+  <span class="eyebrow">タブ② Cowork — 活用シナリオ 1/2</span>
+  <h2 class="card-title">シナリオA：領収書フォルダから経費レポート（Excel）を自動作成</h2>
+  <div class="scenario-flow">
+    <div class="sf"><b>課題</b>月末に溜まった数十枚の領収書画像から、手作業で経費一覧を転記している。月数時間の単純作業。</div>
+    <span class="sf-arrow">→</span>
+    <div class="sf"><b>打ち手</b>領収書を1フォルダに集約し、Coworkに「読み取り→集計→Excel化」を一括委任。</div>
+    <span class="sf-arrow">→</span>
+    <div class="sf"><b>成果物</b>日付・金額・科目を整理し、合計式まで入ったExcelファイルがローカルに生成される。</div>
+  </div>
+  <h4>操作手順</h4>
+  <ol class="steps">
+    <li><b>領収書画像を「経費2026-05」フォルダにまとめる</b>（前処理はこれだけ）。</li>
+    <li><b>Coworkでフォルダを指定し依頼</b>：「このフォルダの領収書を読み取り、日付・店名・金額・推定科目の一覧と月合計を含むExcelを作って」。</li>
+    <li><b>計画を確認して実行→完成ファイルを受け取る</b>：途中で「科目はこの5分類で」など口頭修正（ステアリング）も可能。完成したxlsxは同フォルダに出力される。</li>
+  </ol>
+  <div class="mock">
+    <div class="mock-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="mock-url">Claude Desktop — Cowork タスク実行中</span></div>
+    <div class="mock-body" style="min-height:190px;">
+      <div class="mock-main">
+        <p style="font-size:13px;"><b>📋 計画</b>：1) 画像38枚を読取 2) 項目抽出 3) 科目を推定 4) Excel生成<span class="badge on">②</span></p>
+        <p style="font-size:13px;color:#2563EB;">▶ 実行中… 領収書 21/38 を処理</p>
+        <div class="mock-input">追加指示：交際費と会議費は分けて<span class="badge on">③</span></div>
+      </div>
+      <div class="mock-panel-right">
+        <b style="font-size:13px;color:#1E3A8A;">📂 経費2026-05<span style="position:relative;"><span class="badge on" style="top:-14px;">①</span></span></b>
+        <p style="font-size:12.5px;">🧾 receipt_001.jpg …<br>🧾 receipt_038.jpg<br><b style="color:#2563EB;">📊 経費一覧_2026-05.xlsx（生成）</b></p>
+      </div>
+    </div>
+  </div>
+  <p class="mock-caption">これは説明用の模式図です。実行中も進捗が見え、追加指示で軌道修正できる。</p>
+  <div class="shot-placeholder">ここに実際のスクリーンショットを配置：Coworkのタスク実行中画面（進捗表示）と生成されたExcel</div>
+</section>
+
+<section class="card">
+  <span class="eyebrow">タブ② Cowork — 活用シナリオ 2/2</span>
+  <h2 class="card-title">シナリオB：散在するメモから報告資料を毎週自動生成（定期タスク）</h2>
+  <div class="scenario-flow">
+    <div class="sf"><b>課題</b>週次報告のために、議事メモ・ToDo・下書きをかき集めて毎週金曜に資料化している。</div>
+    <span class="sf-arrow">→</span>
+    <div class="sf"><b>打ち手</b>Coworkプロジェクトにメモフォルダと様式の指示を常設し、<code>/schedule</code> で毎週金曜に自動実行。</div>
+    <span class="sf-arrow">→</span>
+    <div class="sf"><b>成果物</b>毎週、所定様式の週次報告ドキュメント（またはスライド）が指定フォルダに自動生成される。</div>
+  </div>
+  <h4>操作手順</h4>
+  <ol class="steps">
+    <li><b>Coworkでプロジェクトを作成</b>し、メモ用フォルダを紐付け。指示欄に「様式：①今週の成果 ②課題 ③来週予定。各3点以内」と登録。</li>
+    <li><b>一度手動で実行して品質を確認</b>：「今週のメモから週次報告を作成して」。出力を見て指示を微調整する。</li>
+    <li><b>定期化</b>：タスク内で <code>/schedule</code> と入力（またはサイドバー「Scheduled」）し、毎週金曜17時に設定。以後はPCとアプリが起動していれば自動で実行される。</li>
+  </ol>
+  <div class="shot-placeholder">ここに実際のスクリーンショットを配置：Coworkのスケジュールタスク設定画面（/schedule 実行後）</div>
+  <div class="tips">
+    <h4>注意点・つまずきポイント・コツ（Cowork）</h4>
+    <ul>
+      <li><b>アクセス権は最小限に</b>：タスクに必要なフォルダだけを渡す。財務情報など機密ファイルを含むフォルダの付与は避ける（公式の安全ガイドでも明記）。</li>
+      <li><b>スリープ＝停止</b>：長時間タスクや定期タスクは、PCが起きていてアプリが開いていることが条件。電源設定を確認する。</li>
+      <li><b>使用量の消費が速い</b>：マルチステップ実行はトークン消費が大きい。関連作業は1セッションにまとめ、単純な質問はChat側で行う。</li>
+      <li><b>削除系の操作は許可プロンプトが出る</b>：ファイル完全削除はAllowを押すまで実行されない。慌てて承認せず対象を確認する。</li>
+      <li><b>最初は「捨ててもよいフォルダ」で試す</b>：実ファイルを変更できる機能のため、初回はテスト用フォルダで挙動を掴んでから本番データに使う。</li>
     </ul>
+  </div>
+</section>
 
-    <h3 style="font-size:18px;font-weight:700;color:var(--navy);margin-bottom:14px;">前提条件</h3>
-    <ul style="padding-left:22px;margin-bottom:24px;font-size:15px;">
-      <li style="margin-bottom:8px;"><strong>Claude Desktop（最新版）が必須</strong>（macOS / Windows）。Web・モバイル単体では動かない</li>
-      <li style="margin-bottom:8px;"><strong>有料プランが必須</strong>（Pro / Max / Team / Enterprise）</li>
-      <li style="margin-bottom:8px;">作業中はアプリを開いたままにする必要あり（PC睡眠で停止）</li>
-    </ul>
-
-    <div class="tips-box">
-      <h4>💡 コツと注意点</h4>
+<section class="card exercise">
+  <div class="ex-head">
+    <span class="eyebrow" style="margin-bottom:0;">タブ② Cowork — 演習</span>
+    <span class="ex-timer">⏱ 今日の10分</span>
+  </div>
+  <h2 class="card-title">演習：テスト用フォルダで「計画→実行→成果物」を1サイクル観察する</h2>
+  <div class="ex-goal"><b>ゴール：</b>本番データに触れる前に、Coworkが「どこまで自分で進め、どこで許可を求めるか」を安全な環境で体感する。原本には一切触れないのがルール。</div>
+  <div class="ex-grid">
+    <div>
+      <h4>手順</h4>
+      <ol class="steps">
+        <li><b>テスト環境を作る</b>：デスクトップに「cowork-test」フォルダを新規作成し、種類の異なるファイル5〜10個（PDF・画像・Excelなど）を<b>コピーして</b>入れる。原本は移動しない。</li>
+        <li><b>タスクを投げる</b>：Claude DesktopでCoworkタブに切り替え、cowork-testフォルダを指定して依頼：「このフォルダ内のファイルを種類別のサブフォルダに整理し、何をどこへ移したかの一覧を result.md として同じフォルダに保存して」。</li>
+        <li><b>計画を読んでから実行し、進捗を観察する</b>：実行前に表示される計画に目を通す→走らせる→ステップ表示を眺める。余裕があれば途中で「画像はさらに年月別に分けて」と追加指示（ステアリング）を1回試す。</li>
+      </ol>
+      <h4>完了条件（2つチェックできたら終了）</h4>
+      <ul class="checklist">
+        <li>「計画提示→実行→ローカルに成果物」の一連の流れを自分の目で確認した</li>
+        <li>cowork-testフォルダに整理済みサブフォルダと result.md が生成されている</li>
+      </ul>
+    </div>
+    <div class="ex-stuck">
+      <h4>つまずいたら</h4>
       <ul>
-        <li><strong>アクセス権は最小限に</strong>。タスクに必要なフォルダだけを渡す。機密ファイルを含むフォルダの付与は避ける</li>
-        <li><strong>最初は「テスト用フォルダ」で試す</strong>。実ファイルを変更できる機能のため、初回はコピーしたデータで挙動を掴む</li>
-        <li>使用量（トークン消費）が通常チャットより大きい。単純な質問はChat側で行う</li>
-        <li>Coworkのプロジェクト機能はチャットのProjectとは別物（ローカル保存・別管理）</li>
-        <li>削除操作は許可プロンプトが出る。対象を確認してから承認する</li>
+        <li><b>Coworkタブが表示されない</b> → デスクトップアプリが最新版か（claude.com/download）、有料プラン（Pro/Max/Team/Enterprise）でログインしているかを確認。</li>
+        <li><b>タスクが途中で止まった</b> → アプリを閉じた／PCがスリープした可能性。電源設定を見直して再実行。</li>
+        <li><b>想定外のファイルを触ろうとする</b> → そのまま承認せず、対象フォルダの指定を狭めて依頼し直す。</li>
+      </ul>
+      <p class="note" style="margin-top:10px;">5分で終わったら追加の1手：同じタスク内で <code>/schedule</code> と入力し、定期実行の設定画面がどこにあるかだけ確認しておく（設定までは不要）。</p>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<!-- ==================== タブ③ Claude Code ==================== -->
+<div class="tabpanel panel-frame" id="panel-code">
+
+<section class="card" id="tab-code">
+  <span class="eyebrow">タブ③ Claude Code — 概要</span>
+  <h2 class="card-title">Claude Code：ターミナルで動く開発エージェント</h2>
+  <p>Claude Codeは、ターミナル（コマンドライン）上でリポジトリを直接読み書きする<span class="term">エージェント型コーディングツール</span>。「この機能を追加して」「このバグを直して」と自然言語で依頼すると、関連コードの特定→修正→（テストがあれば）実行確認までを自律的に行う。ファイル編集・コマンド実行・Gitコミットまで実際に「手を動かす」点が、コードを提案するだけのチャットとの本質的な違い。</p>
+  <div class="grid2">
+    <div class="box can">
+      <h4>できること</h4>
+      <ul>
+        <li>説明文からの機能実装、バグ修正、リファクタリング、テスト作成</li>
+        <li>コードベース全体の構造把握と質問応答（手動でファイルを渡す必要なし）</li>
+        <li>Git操作の会話化（差分確認・コミット・ブランチ作成・コンフリクト解消）</li>
+        <li>MCP連携でGoogle Drive・Figma・Jira等の外部情報も参照</li>
+        <li>パイプ・スクリプト化（<code>claude -p "…"</code>）によるCI/CD組み込み</li>
+        <li>ターミナル以外にWeb版・デスクトップ・VS Code/JetBrains・Slack等のインターフェースも提供</li>
+      </ul>
+    </div>
+    <div class="box cant">
+      <h4>できないこと・前提（誤解しやすい点）</h4>
+      <ul>
+        <li>アカウント必須：有料サブスクリプション（Pro/Max/Team/Enterprise）または Claude Console（API・従量課金）</li>
+        <li>非エンジニアの汎用PC作業向けではない（その用途はCowork）</li>
+        <li>npmでのインストールはNode.js 18以上が必要。ネイティブインストーラ（curl / brew / PowerShell）なら不要</li>
+        <li>生成コードの正しさは保証されない。レビュー・テストは人間の責任</li>
+        <li>ファイルを実際に書き換えるため、Git管理下でない作業はリスクが高い</li>
       </ul>
     </div>
   </div>
 </section>
 
-<!-- ===== CLAUDE CODE ===== -->
-<section class="section" id="code">
-  <div class="container">
-    <span class="eyebrow">FEATURE 4</span>
-    <h2 class="sec-title">⌨ Claude Code — コードはリポジトリごと任せる</h2>
-    <p class="sec-lead">ターミナル上でリポジトリを直接読み書きする開発エージェント。コードを「提案する」だけでなく、実際に「手を動かして」ファイルを書き換える。</p>
-
-    <h3 style="font-size:18px;font-weight:700;color:var(--navy);margin-bottom:14px;">できること</h3>
-    <ul style="padding-left:22px;margin-bottom:24px;font-size:15px;">
-      <li style="margin-bottom:8px;">説明文からの機能実装・バグ修正・リファクタリング・テスト作成</li>
-      <li style="margin-bottom:8px;">コードベース全体の構造把握と質問応答（手動でファイルを渡す必要なし）</li>
-      <li style="margin-bottom:8px;">Git操作の会話化（差分確認・コミット・ブランチ作成・コンフリクト解消）</li>
-      <li style="margin-bottom:8px;">MCP連携でGoogle Drive・Figma・Jira等の外部情報も参照</li>
-      <li style="margin-bottom:8px;">ターミナル以外にWeb版・VS Code/JetBrains拡張・Slack等のインターフェースも提供</li>
-    </ul>
-
-    <h3 style="font-size:18px;font-weight:700;color:var(--navy);margin-bottom:14px;">インストール方法</h3>
-    <pre style="background:#0F172A;color:#E2E8F0;border-radius:10px;padding:20px 24px;font-size:13.5px;overflow-x:auto;margin-bottom:24px;"><code># macOS / Linux / WSL（推奨）
+<section class="card">
+  <span class="eyebrow">タブ③ Claude Code — 始め方</span>
+  <h2 class="card-title">Claude Codeの始め方（3ステップ）</h2>
+  <ol class="steps">
+    <li><b>インストール</b>：いずれか1つを実行。
+      <pre><code># macOS / Linux / WSL（ネイティブ・推奨）
 curl -fsSL https://claude.ai/install.sh | bash
 
 # Homebrew（macOS / Linux）
@@ -719,379 +853,160 @@ brew install --cask claude-code
 # Windows PowerShell
 irm https://claude.ai/install.ps1 | iex
 
-# npm（Node.js 18+ 必要）
+# npm（Node.js 18+ が必要）
 npm install -g @anthropic-ai/claude-code</code></pre>
+    </li>
+    <li><b>プロジェクトフォルダで起動してログイン</b>：<code>cd 対象プロジェクト</code> → <code>claude</code>。初回はブラウザでの認証を求められる（切替は <code>/login</code>）。</li>
+    <li><b>自然言語で依頼する</b>：まず「このプロジェクトの構成を説明して」で把握させ、その後タスクを投げる。<code>/help</code> でコマンド一覧、<code>/resume</code> で過去セッションの再開。</li>
+  </ol>
+  <div class="mock">
+    <div class="mock-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="mock-url">ターミナル — my-app</span></div>
+    <div class="mock-body" style="min-height:200px;">
+      <div class="mock-main" style="background:#0F172A;color:#E2E8F0;font-family:Consolas,monospace;font-size:13.5px;border-radius:0;">
+        <p style="color:#94A3B8;">$ cd my-app && claude<span class="badge on">②</span></p>
+        <p style="color:#60A5FA;">✻ Claude Code v◯.◯ — model / working dir: ~/my-app</p>
+        <p style="color:#94A3B8;">&gt; ユーザー登録フォームに入力バリデーションを追加して<span class="badge on">③</span></p>
+        <p>● 計画: 1) form.tsx 特定 2) zodでバリデーション追加 3) テスト実行</p>
+        <p style="color:#4ADE80;">✓ src/components/form.tsx を編集 / ✓ tests 12 passed</p>
+        <p style="color:#94A3B8;">&gt; commit my changes with a descriptive message</p>
+      </div>
+    </div>
+  </div>
+  <p class="mock-caption">これは説明用の模式図です（ターミナル画面のイメージ）。①インストール→②プロジェクト内で起動→③自然言語で依頼。</p>
+  <div class="shot-placeholder">ここに実際のスクリーンショットを配置：ターミナルでのClaude Code起動画面（バージョン・作業ディレクトリ表示）</div>
+</section>
 
-    <h3 style="font-size:18px;font-weight:700;color:var(--navy);margin-bottom:14px;">起動方法</h3>
-    <ol style="padding-left:22px;font-size:15px;margin-bottom:24px;">
-      <li style="margin-bottom:10px;"><code style="background:#0F172A;color:#E2E8F0;padding:2px 8px;border-radius:4px;">cd 対象リポジトリ</code> → <code style="background:#0F172A;color:#E2E8F0;padding:2px 8px;border-radius:4px;">claude</code> で起動（初回はブラウザ認証）</li>
-      <li style="margin-bottom:10px;">まず「このプロジェクトの構成を説明して」でリポジトリを把握させる</li>
-      <li style="margin-bottom:10px;">その後タスクを自然言語で依頼。<code style="background:#0F172A;color:#E2E8F0;padding:2px 8px;border-radius:4px;">/help</code> でコマンド一覧、<code style="background:#0F172A;color:#E2E8F0;padding:2px 8px;border-radius:4px;">/resume</code> で過去セッション再開</li>
-    </ol>
+<section class="card">
+  <span class="eyebrow">タブ③ Claude Code — 活用シナリオ 1/2</span>
+  <h2 class="card-title">シナリオA：バグ修正をエラーメッセージごと丸投げする</h2>
+  <div class="scenario-flow">
+    <div class="sf"><b>課題</b>「空フォームでも送信できてしまう」バグ。原因箇所の特定から始めると半日かかる見込み。</div>
+    <span class="sf-arrow">→</span>
+    <div class="sf"><b>打ち手</b>症状とエラーメッセージをそのままClaude Codeに渡し、原因特定→修正→テストまで委任。</div>
+    <span class="sf-arrow">→</span>
+    <div class="sf"><b>成果物</b>修正済みコード＋通過したテスト＋説明的なコミット。人間はレビューに集中。</div>
+  </div>
+  <h4>操作手順</h4>
+  <ol class="steps">
+    <li><b>リポジトリで起動</b>：<code>cd my-app && claude</code>。修正用ブランチを切らせてもよい（「create a new branch called fix/empty-form」）。</li>
+    <li><b>症状を具体的に伝える</b>：「ユーザーが空のフォームを送信できてしまうバグがある。直して」。Claudeが該当コードを特定し、修正案を実装してテストを実行する。</li>
+    <li><b>差分を確認してコミット</b>：「what files have I changed?」→内容を確認→「commit my changes with a descriptive message」。</li>
+  </ol>
+  <div class="shot-placeholder">ここに実際のスクリーンショットを配置：バグ修正タスクの実行ログ（編集ファイルとテスト結果が見える状態）</div>
+</section>
 
-    <div class="tips-box">
-      <h4>💡 コツと注意点</h4>
-      <ul>
-        <li><strong>必ずGit管理下で使う</strong>。実ファイルを書き換えるため、コミット・ブランチでいつでも巻き戻せる状態を先に作る</li>
-        <li><strong>タスクは小さく具体的に</strong>。「全部直して」より「このモジュールのこの挙動を直して」が良い</li>
-        <li>テストを「合格条件」として渡す（「テストが通るまで修正して」）と出力品質の検証をエージェント側に組み込める</li>
-        <li>npmインストールが動かない場合は <code style="background:#0F172A;color:#E2E8F0;padding:1px 6px;border-radius:4px;">node -v</code> でNode.js 18以上かを確認。満たさないならネイティブインストーラを使う</li>
-        <li>生成コードの正しさは保証されない。レビュー・テストは人間の責任</li>
+<section class="card">
+  <span class="eyebrow">タブ③ Claude Code — 活用シナリオ 2/2</span>
+  <h2 class="card-title">シナリオB：未知のコードベースのキャッチアップとリファクタリング委任</h2>
+  <div class="scenario-flow">
+    <div class="sf"><b>課題</b>引き継いだレガシーリポジトリの構造が不明。ドキュメントもなく、改修の着手点が見えない。</div>
+    <span class="sf-arrow">→</span>
+    <div class="sf"><b>打ち手</b>Claude Codeに構造説明と依存関係の質問を重ね、その理解の上でリファクタリングを段階委任。</div>
+    <span class="sf-arrow">→</span>
+    <div class="sf"><b>成果物</b>コードベースの理解（質問応答）＋async/await化などのモジュール単位の改善コミット群。</div>
+  </div>
+  <h4>操作手順</h4>
+  <ol class="steps">
+    <li><b>把握フェーズ</b>：「このプロジェクトの全体構成と主要モジュールの役割を説明して」「認証処理はどこで何に依存している？」と質問を重ねる（Claude Codeが必要なファイルを自分で読む）。</li>
+    <li><b>小さく委任</b>：「認証モジュールをコールバックからasync/awaitにリファクタリングして」。1モジュールずつ依頼し、都度テストを走らせる。</li>
+    <li><b>記録を残す</b>：各改善を個別コミットにさせ、最後に「直近の変更内容でリリースノートの下書きを書いて」。</li>
+  </ol>
+  <div class="shot-placeholder">ここに実際のスクリーンショットを配置：コードベース説明への回答と、リファクタリング差分の画面</div>
+  <div class="tips">
+    <h4>注意点・つまずきポイント・コツ（Claude Code）</h4>
+    <ul>
+      <li><b>必ずGit管理下で使う</b>：実ファイルを書き換えるため、コミット・ブランチでいつでも巻き戻せる状態を作ってから委任する。</li>
+      <li><b>タスクは小さく具体的に</b>：「全部直して」より「このモジュールのこの挙動を直して」。1依頼=1関心事がレビューも容易。</li>
+      <li><b>Windowsのインストールではシェルに注意</b>：PowerShell用とCMD用でコマンドが異なる。エラー文言（<code>irm</code> が認識されない等）でどちらにいるか判別できる。</li>
+      <li><b>npm版が動かない場合はNode.jsのバージョン確認</b>（18以上）。迷ったらネイティブインストーラを使う。</li>
+      <li><b>テストを「合格条件」として渡す</b>：「テストが通るまで修正して」と依頼すると、出力品質の検証をエージェント側に組み込める。</li>
+    </ul>
+  </div>
+</section>
+
+<section class="card exercise">
+  <div class="ex-head">
+    <span class="eyebrow" style="margin-bottom:0;">タブ③ Claude Code — 演習</span>
+    <span class="ex-timer">⏱ 今日の10分</span>
+  </div>
+  <h2 class="card-title">演習：自分のリポジトリを「読み取りだけ」で説明させる</h2>
+  <div class="ex-goal"><b>ゴール：</b>コードを1行も書き換えさせずに、Claude Codeの「コードベース理解力」だけを安全に試す。書き込みを伴うタスクは、この読み取り体験で信頼感を掴んでからでよい。</div>
+  <div class="ex-grid">
+    <div>
+      <h4>手順</h4>
+      <ol class="steps">
+        <li><b>インストールして起動</b>：上の「始め方」のコマンドでインストール→Git管理下の手元リポジトリで <code>cd 対象リポジトリ && claude</code> →初回はブラウザ認証。</li>
+        <li><b>読み取り系の質問を2つ投げる</b>：「このプロジェクトの全体構成と主要モジュールの役割を説明して」→続けて「直近のコミット5件を要約して」。ファイルを手で渡す必要がないことを確認する。</li>
+        <li><b>コマンドを2つ覚える</b>：<code>/help</code> で利用可能コマンドの一覧を表示し、セッションを閉じた後に <code>claude</code> → <code>/resume</code> で会話を再開できることを確認する。</li>
+      </ol>
+      <h4>完了条件（2つチェックできたら終了）</h4>
+      <ul class="checklist">
+        <li>構成説明とコミット要約が、実際のリポジトリ内容に即して返ってきた</li>
+        <li><code>/help</code> と <code>/resume</code> の動作を確認した</li>
       </ul>
     </div>
+    <div class="ex-stuck">
+      <h4>つまずいたら</h4>
+      <ul>
+        <li><b><code>claude</code> コマンドが見つからない</b> → ターミナルを開き直す。それでも不可ならPATH設定を確認、またはネイティブインストーラで入れ直す。</li>
+        <li><b>npmインストールが失敗する</b> → <code>node -v</code> で18以上かを確認。満たさないならcurl/brewのネイティブ版を使う。</li>
+        <li><b>Windowsでインストールコマンドがエラー</b> → PowerShellとCMDでコマンドが異なる。エラー文言（<code>irm</code> が認識されない等）で今いるシェルを判別する。</li>
+      </ul>
+      <p class="note" style="margin-top:10px;">5分で終わったら追加の1手：「create a new branch called try/claude-code」→「READMEの誤字を直して」→差分確認→コミット、まで書き込み系の最小1往復を試す（ブランチ上なので安全）。</p>
+    </div>
   </div>
 </section>
 
-<!-- ===== QUIZ ===== -->
-<section id="quiz-section">
-  <div class="container">
-    <span class="eyebrow" style="background:rgba(96,165,250,.15);border-color:#60A5FA;color:#60A5FA;">QUIZ</span>
-    <h2 class="sec-title">📝 習熟度チェッククイズ</h2>
-    <p class="sec-lead">4択問題で理解度を確認しましょう。全10問。解説も表示されます。</p>
+</div>
 
-    <!-- Progress -->
-    <div class="quiz-progress">
-      <div class="quiz-progress-bar">
-        <div class="quiz-progress-fill" id="prog-fill" style="width:0%"></div>
-      </div>
-      <span class="quiz-progress-text" id="prog-text">0 / 10</span>
+<!-- ============ 3. まとめ ============ -->
+<section class="card" id="summary">
+  <span class="eyebrow">SECTION 6</span>
+  <h2 class="card-title">まとめ：使い分けの結論（1枚）</h2>
+  <div class="grid2" style="grid-template-columns:1fr 1fr;">
+    <div class="box" style="border-top:4px solid #2563EB;">
+      <h4 style="color:#1E3A8A;">📁 Project — 「毎回説明し直す」をやめる</h4>
+      <p style="font-size:14.5px;">同じ資料・前提で繰り返し会話するなら、最初に作るべきはこれ。ナレッジ＋指示の一度の設定が、以後すべてのチャット品質を底上げする。</p>
     </div>
-
-    <!-- Q1 -->
-    <div class="quiz-card active" data-q="0">
-      <div class="quiz-num">問題 1 / 10</div>
-      <p class="quiz-q">Claudeの「Project」機能の主な目的として最も適切なものはどれか？</p>
-      <div class="quiz-options">
-        <button class="quiz-option" data-idx="0"><span class="opt-label">A</span><span>ローカルPCのファイルを直接整理・変換する</span></button>
-        <button class="quiz-option" data-idx="1"><span class="opt-label">B</span><span>同じ資料・指示を毎回説明し直す手間をなくし、チャット品質を安定させる</span></button>
-        <button class="quiz-option" data-idx="2"><span class="opt-label">C</span><span>リポジトリのコードをターミナルから直接書き換える</span></button>
-        <button class="quiz-option" data-idx="3"><span class="opt-label">D</span><span>会話の結果として生まれた文書をURLで公開する</span></button>
-      </div>
-      <div class="quiz-feedback" data-correct="1" data-fb="正解はB。Projectはナレッジ（参照ファイル）とカスタム指示を一度設定することで、以後のすべてのチャットに自動的に適用される「専用作業部屋」機能です。A→Cowork、C→Claude Code、D→Artifactsの説明です。"></div>
-      <div class="quiz-nav">
-        <span></span>
-        <button class="quiz-btn" onclick="nextQ(1)" disabled id="next-0">次へ →</button>
-      </div>
+    <div class="box" style="border-top:4px solid #2563EB;">
+      <h4 style="color:#1E3A8A;">🧩 Artifacts — 「会話の結果」を配れる形にする</h4>
+      <p style="font-size:14.5px;">文書・図・アプリを専用ウィンドウで反復編集し、リンク1つで公開。他人の作品もCustomizeで自分用に改変できる。</p>
     </div>
-
-    <!-- Q2 -->
-    <div class="quiz-card" data-q="1">
-      <div class="quiz-num">問題 2 / 10</div>
-      <p class="quiz-q">「Artifacts」機能でできないことはどれか？</p>
-      <div class="quiz-options">
-        <button class="quiz-option" data-idx="0"><span class="opt-label">A</span><span>HTML/ReactアプリをArtifactとして生成し、ブラウザ上で動かす</span></button>
-        <button class="quiz-option" data-idx="1"><span class="opt-label">B</span><span>作成したArtifactをURLで公開・共有する</span></button>
-        <button class="quiz-option" data-idx="2"><span class="opt-label">C</span><span>ローカルPCの指定フォルダにファイルを直接書き込む</span></button>
-        <button class="quiz-option" data-idx="3"><span class="opt-label">D</span><span>他人の公開ArtifactをCustomizeして自分のコピーを作る</span></button>
-      </div>
-      <div class="quiz-feedback" data-correct="2" data-fb="正解はC。ArtifactsはローカルPCにファイルを書き込みません。成果物はブラウザ上の表示とダウンロードのみです。ローカルファイルへの書き込みが必要な場合はCoworkを使います。"></div>
-      <div class="quiz-nav">
-        <button class="quiz-btn secondary" onclick="prevQ(1)">← 戻る</button>
-        <button class="quiz-btn" onclick="nextQ(2)" disabled id="next-1">次へ →</button>
-      </div>
+    <div class="box" style="border-top:4px solid #1E3A8A;">
+      <h4 style="color:#1E3A8A;">🛠 Cowork — 「相談」でなく「作業」を渡す</h4>
+      <p style="font-size:14.5px;">ローカルファイルが絡む複数ステップ作業（整理・変換・Excel/スライド作成・定期タスク）はここ。デスクトップアプリ＋有料プランが前提。</p>
     </div>
-
-    <!-- Q3 -->
-    <div class="quiz-card" data-q="2">
-      <div class="quiz-num">問題 3 / 10</div>
-      <p class="quiz-q">Coworkを使うために必須の条件はどれか？（最も適切なものを選べ）</p>
-      <div class="quiz-options">
-        <button class="quiz-option" data-idx="0"><span class="opt-label">A</span><span>Node.js 18以上がインストールされていること</span></button>
-        <button class="quiz-option" data-idx="1"><span class="opt-label">B</span><span>Claude Desktopアプリ（最新版）＋有料プランでのログイン</span></button>
-        <button class="quiz-option" data-idx="2"><span class="opt-label">C</span><span>GitHubアカウントとリポジトリが必要</span></button>
-        <button class="quiz-option" data-idx="3"><span class="opt-label">D</span><span>無料プランでもブラウザ版から利用できる</span></button>
-      </div>
-      <div class="quiz-feedback" data-correct="1" data-fb="正解はB。CoworkはClaude Desktopアプリ（macOS/Windows）が必須で、有料プラン（Pro/Max/Team/Enterprise）でのログインが前提です。Web・モバイル単体では使えません。Node.jsが必要なのはClaude CodeのnpmインストールのときのみでCowork自体には不要です。"></div>
-      <div class="quiz-nav">
-        <button class="quiz-btn secondary" onclick="prevQ(2)">← 戻る</button>
-        <button class="quiz-btn" onclick="nextQ(3)" disabled id="next-2">次へ →</button>
-      </div>
+    <div class="box" style="border-top:4px solid #1E3A8A;">
+      <h4 style="color:#1E3A8A;">⌨ Claude Code — コードはリポジトリごと任せる</h4>
+      <p style="font-size:14.5px;">開発者向け。実装・修正・Git操作まで実行するエージェント。Coworkの土台でもある。</p>
     </div>
-
-    <!-- Q4 -->
-    <div class="quiz-card" data-q="3">
-      <div class="quiz-num">問題 4 / 10</div>
-      <p class="quiz-q">Claude Codeを使う際に「必ずGit管理下で使う」とされている理由として最も適切なものはどれか？</p>
-      <div class="quiz-options">
-        <button class="quiz-option" data-idx="0"><span class="opt-label">A</span><span>GitHubと連携しないとコードを読み込めないから</span></button>
-        <button class="quiz-option" data-idx="1"><span class="opt-label">B</span><span>Claude CodeはGitのコマンドしか実行できないから</span></button>
-        <button class="quiz-option" data-idx="2"><span class="opt-label">C</span><span>実際にファイルを書き換えるため、コミット・ブランチでいつでも巻き戻せる状態が安全だから</span></button>
-        <button class="quiz-option" data-idx="3"><span class="opt-label">D</span><span>ターミナルを使うにはGitのインストールが前提条件だから</span></button>
-      </div>
-      <div class="quiz-feedback" data-correct="2" data-fb="正解はC。Claude Codeは実際にファイルを書き換える（書き込む）ため、Git管理下でブランチ・コミットを使えば変更を追跡・巻き戻しできます。誤った変更も安全に元に戻せる状態を作ってから委任するのが基本です。"></div>
-      <div class="quiz-nav">
-        <button class="quiz-btn secondary" onclick="prevQ(3)">← 戻る</button>
-        <button class="quiz-btn" onclick="nextQ(4)" disabled id="next-3">次へ →</button>
-      </div>
-    </div>
-
-    <!-- Q5 -->
-    <div class="quiz-card" data-q="4">
-      <div class="quiz-num">問題 5 / 10</div>
-      <p class="quiz-q">「月末に溜まった数十枚の領収書画像を自動で読み取り、金額・科目を整理したExcelを作りたい」という要件に最も適した機能はどれか？</p>
-      <div class="quiz-options">
-        <button class="quiz-option" data-idx="0"><span class="opt-label">A</span><span>Project（ナレッジに領収書を登録してチャットで確認）</span></button>
-        <button class="quiz-option" data-idx="1"><span class="opt-label">B</span><span>Artifacts（領収書一覧のHTMLを生成して公開）</span></button>
-        <button class="quiz-option" data-idx="2"><span class="opt-label">C</span><span>Cowork（フォルダを指定して読み取り→集計→Excel生成を自動実行）</span></button>
-        <button class="quiz-option" data-idx="3"><span class="opt-label">D</span><span>Claude Code（ターミナルでスクリプトを書いて実行）</span></button>
-      </div>
-      <div class="quiz-feedback" data-correct="2" data-fb="正解はC。Coworkはローカルフォルダの実ファイルを直接操作し、複数ステップ作業（読み取り→集計→ファイル生成）を自動実行するのに最適です。非エンジニアでもデスクトップアプリから使えます。Claude Codeでも可能ですがターミナル操作が前提になります。"></div>
-      <div class="quiz-nav">
-        <button class="quiz-btn secondary" onclick="prevQ(4)">← 戻る</button>
-        <button class="quiz-btn" onclick="nextQ(5)" disabled id="next-4">次へ →</button>
-      </div>
-    </div>
-
-    <!-- Q6 -->
-    <div class="quiz-card" data-q="5">
-      <div class="quiz-num">問題 6 / 10</div>
-      <p class="quiz-q">Projectのナレッジで、有料プランユーザーがファイル容量の上限に近づいたときに自動で有効化される仕組みの名称はどれか？</p>
-      <div class="quiz-options">
-        <button class="quiz-option" data-idx="0"><span class="opt-label">A</span><span>MCP（Model Context Protocol）</span></button>
-        <button class="quiz-option" data-idx="1"><span class="opt-label">B</span><span>RAG（Retrieval-Augmented Generation）</span></button>
-        <button class="quiz-option" data-idx="2"><span class="opt-label">C</span><span>Artifacts Publish</span></button>
-        <button class="quiz-option" data-idx="3"><span class="opt-label">D</span><span>Coworkエージェント基盤</span></button>
-      </div>
-      <div class="quiz-feedback" data-correct="1" data-fb="正解はB。RAG（Retrieval-Augmented Generation）は、ナレッジ全体をコンテキストに入れるのではなく必要な箇所だけ検索して参照する仕組みです。Pro/Max/Team/Enterpriseプランではナレッジが上限に近づくとRAGが自動有効化され、容量が最大約10倍に拡張されます。"></div>
-      <div class="quiz-nav">
-        <button class="quiz-btn secondary" onclick="prevQ(5)">← 戻る</button>
-        <button class="quiz-btn" onclick="nextQ(6)" disabled id="next-5">次へ →</button>
-      </div>
-    </div>
-
-    <!-- Q7 -->
-    <div class="quiz-card" data-q="6">
-      <div class="quiz-num">問題 7 / 10</div>
-      <p class="quiz-q">他人が公開したArtifactを「Customize」ボタンで取得したとき、正しい説明はどれか？</p>
-      <div class="quiz-options">
-        <button class="quiz-option" data-idx="0"><span class="opt-label">A</span><span>元のArtifactが自分の編集で直接書き換えられる</span></button>
-        <button class="quiz-option" data-idx="1"><span class="opt-label">B</span><span>相手側のアカウントに自分の変更が通知される</span></button>
-        <button class="quiz-option" data-idx="2"><span class="opt-label">C</span><span>自分側に元のArtifactのコピーが作成され、それを自由に改変できる</span></button>
-        <button class="quiz-option" data-idx="3"><span class="opt-label">D</span><span>元のArtifactが削除され、自分のバージョンに置き換わる</span></button>
-      </div>
-      <div class="quiz-feedback" data-correct="2" data-fb="正解はC。Customizeは元のArtifactを変更しません。自分のアカウント側にコピーが作成され、そのコピーを会話で改変していく仕組みです。元の作成者のArtifactには何も影響がありません。"></div>
-      <div class="quiz-nav">
-        <button class="quiz-btn secondary" onclick="prevQ(6)">← 戻る</button>
-        <button class="quiz-btn" onclick="nextQ(7)" disabled id="next-6">次へ →</button>
-      </div>
-    </div>
-
-    <!-- Q8 -->
-    <div class="quiz-card" data-q="7">
-      <div class="quiz-num">問題 8 / 10</div>
-      <p class="quiz-q">Claude Codeでリポジトリのキャッチアップをする際、最初に推奨される操作として最も適切なものはどれか？</p>
-      <div class="quiz-options">
-        <button class="quiz-option" data-idx="0"><span class="opt-label">A</span><span>すぐに「全部リファクタリングして」と依頼する</span></button>
-        <button class="quiz-option" data-idx="1"><span class="opt-label">B</span><span>「このプロジェクトの全体構成と主要モジュールの役割を説明して」と質問する</span></button>
-        <button class="quiz-option" data-idx="2"><span class="opt-label">C</span><span>全ファイルを手動でコピーしてチャットに貼り付ける</span></button>
-        <button class="quiz-option" data-idx="3"><span class="opt-label">D</span><span>まずProjectにリポジトリのファイルをアップロードする</span></button>
-      </div>
-      <div class="quiz-feedback" data-correct="1" data-fb="正解はB。Claude Codeはリポジトリ内のファイルを自律的に読み込む能力があります。まず構成を把握させてから、その理解の上でタスクを段階的に委任するのが推奨される手順です。手動でファイルを渡す必要はありません。"></div>
-      <div class="quiz-nav">
-        <button class="quiz-btn secondary" onclick="prevQ(7)">← 戻る</button>
-        <button class="quiz-btn" onclick="nextQ(8)" disabled id="next-7">次へ →</button>
-      </div>
-    </div>
-
-    <!-- Q9 -->
-    <div class="quiz-card" data-q="8">
-      <div class="quiz-num">問題 9 / 10</div>
-      <p class="quiz-q">Coworkで定期タスク（毎週自動実行）を設定する際に使うコマンドはどれか？</p>
-      <div class="quiz-options">
-        <button class="quiz-option" data-idx="0"><span class="opt-label">A</span><span><code>/cron</code></span></button>
-        <button class="quiz-option" data-idx="1"><span class="opt-label">B</span><span><code>/autorun</code></span></button>
-        <button class="quiz-option" data-idx="2"><span class="opt-label">C</span><span><code>/schedule</code></span></button>
-        <button class="quiz-option" data-idx="3"><span class="opt-label">D</span><span><code>/repeat</code></span></button>
-      </div>
-      <div class="quiz-feedback" data-correct="2" data-fb="正解はC。Coworkでは <code>/schedule</code> コマンドを使って定期タスクを設定できます（またはサイドバーの「Scheduled」から設定）。ただし、定期タスクはPCとアプリが起動・起きている状態のときのみ実行されます。"></div>
-      <div class="quiz-nav">
-        <button class="quiz-btn secondary" onclick="prevQ(8)">← 戻る</button>
-        <button class="quiz-btn" onclick="nextQ(9)" disabled id="next-8">次へ →</button>
-      </div>
-    </div>
-
-    <!-- Q10 -->
-    <div class="quiz-card" data-q="9">
-      <div class="quiz-num">問題 10 / 10</div>
-      <p class="quiz-q">「4機能の選択基準」として最も正確に表現されているものはどれか？</p>
-      <div class="quiz-options">
-        <button class="quiz-option" data-idx="0"><span class="opt-label">A</span><span>エンジニアはClaude Code、非エンジニアはProjectのみ使えばよい</span></button>
-        <button class="quiz-option" data-idx="1"><span class="opt-label">B</span><span>コードなら Claude Code → PC上の実作業なら Cowork → 繰り返す会話なら Project → 配る成果物なら Artifacts</span></button>
-        <button class="quiz-option" data-idx="2"><span class="opt-label">C</span><span>まずArtifactsを試し、足りなければCoworkに切り替える</span></button>
-        <button class="quiz-option" data-idx="3"><span class="opt-label">D</span><span>4つは同じ機能の別名であり、どれを選んでも結果は同じ</span></button>
-      </div>
-      <div class="quiz-feedback" data-correct="1" data-fb="正解はB。公式ガイドが示す判断の最短経路です。実務では「Projectの中で会話し、成果物はArtifactsで作り、ファイル作業が発生したらCoworkに渡す」という組み合わせ運用が基本形になります。4機能はそれぞれ異なる課題を解決するものです。"></div>
-      <div class="quiz-nav">
-        <button class="quiz-btn secondary" onclick="prevQ(9)">← 戻る</button>
-        <button class="quiz-btn" onclick="showResult()" disabled id="next-9">結果を見る 🎉</button>
-      </div>
-    </div>
-
-    <!-- Result -->
-    <div class="quiz-result" id="quiz-result">
-      <div class="result-score" id="result-score">0</div>
-      <div class="result-label">/ 10 問正解</div>
-      <div class="result-msg" id="result-msg"></div>
-      <div class="result-bars" id="result-bars"></div>
-      <button class="retry-btn" onclick="retryQuiz()">🔄 もう一度チャレンジ</button>
-      <button class="retry-btn ghost" onclick="scrollToTop()">📖 解説を読み直す</button>
-    </div>
-
   </div>
+  <h3>判断の最短経路</h3>
+  <p style="font-size:17px;"><b>コードなら Claude Code → PC上の実作業なら Cowork → 繰り返す会話なら Project → 配る成果物なら Artifacts → それ以外は通常チャット。</b></p>
+  <p class="note">実務では「Projectの中で会話し、成果物はArtifactsで作り、ファイル作業が発生したらCoworkに渡す」という組み合わせ運用が基本形になる。</p>
+  <p style="margin-top:16px;background:#EFF6FF;border:1px solid #2563EB;border-radius:10px;padding:14px 20px;font-size:15px;"><b style="color:#1E3A8A;">読み終えたら：</b>各タブ末尾の「⏱ 今日の10分」演習を1つだけ実行する。資料の理解度より、当日中に1タスク動かしたかどうかが定着を決める。</p>
 </section>
 
-<!-- ===== FOOTER ===== -->
 <footer>
-  <p>本資料の内容はAnthropicの公式ドキュメント（support.claude.com / docs.claude.com）を参照して作成。<br>
-  UIや機能はアップデートにより変わる場合があります。最新情報は公式サイトでご確認ください。</p>
-  <p style="margin-top:8px;">2026年6月 作成</p>
+  <b>参照した公式情報（2026年6月10日時点）</b><br>
+  ・What are projects? — support.claude.com/en/articles/9517075<br>
+  ・What are artifacts and how do I use them? — support.claude.com/en/articles/9487310<br>
+  ・Publishing and sharing artifacts（Customize含む） — support.claude.com/en/articles/9547008<br>
+  ・Get started with Claude Cowork — support.claude.com/en/articles/13345190 ／ Use Claude Cowork safely — 同 13364135<br>
+  ・Organize your tasks with projects in Claude Cowork — 同 14116274<br>
+  ・Claude Code Overview / Quickstart — code.claude.com/docs<br>
+  ※プラン条件・UI・機能名は更新される可能性があります。導入判断の前に上記ページで最新情報を確認してください。
 </footer>
 
 <script>
-// ===== QUIZ LOGIC =====
-const TOTAL = 10;
-var answers = new Array(TOTAL).fill(-1);  // user's chosen answer per question
-var results = new Array(TOTAL).fill(null); // true/false per question
-var currentQ = 0;
-
-function getCard(q) { return document.querySelector('.quiz-card[data-q="' + q + '"]'); }
-
-function selectOption(q, idx) {
-  var card = getCard(q);
-  var feedback = card.querySelector('.quiz-feedback');
-  var correct = parseInt(feedback.dataset.correct);
-  var opts = card.querySelectorAll('.quiz-option');
-
-  // Disable all options
-  opts.forEach(function(o) { o.disabled = true; });
-
-  answers[q] = idx;
-  results[q] = (idx === correct);
-
-  // Apply styles
-  opts[idx].classList.add(idx === correct ? 'correct' : 'wrong');
-  if (idx !== correct) {
-    opts[correct].classList.add('reveal-correct');
-  }
-
-  // Show feedback
-  feedback.classList.add('show');
-  feedback.classList.add(results[q] ? 'correct-fb' : 'wrong-fb');
-  feedback.innerHTML = (results[q] ? '✅ <b>正解！</b> ' : '❌ <b>不正解。</b> ') + feedback.dataset.fb;
-
-  // Enable next button
-  document.getElementById('next-' + q).disabled = false;
-
-  updateProgress(q + 1);
+function openTab(name){
+  var panels=document.querySelectorAll('.tabpanel');
+  for(var i=0;i<panels.length;i++){panels[i].classList.remove('active');}
+  var btns=document.querySelectorAll('.tabbar button');
+  for(var j=0;j<btns.length;j++){btns[j].classList.remove('active');}
+  document.getElementById('panel-'+name).classList.add('active');
+  document.getElementById('btn-'+name).classList.add('active');
 }
-
-function updateProgress(answered) {
-  var pct = (answered / TOTAL) * 100;
-  document.getElementById('prog-fill').style.width = pct + '%';
-  document.getElementById('prog-text').textContent = answered + ' / ' + TOTAL;
-}
-
-function nextQ(to) {
-  var from = to - 1;
-  getCard(from).classList.remove('active');
-  getCard(to).classList.add('active');
-  currentQ = to;
-  getCard(to).scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
-
-function prevQ(to) {
-  var from = to + 1;
-  getCard(from).classList.remove('active');
-  getCard(to).classList.add('active');
-  currentQ = to;
-  getCard(to).scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
-
-function showResult() {
-  var last = getCard(TOTAL - 1);
-  last.classList.remove('active');
-
-  var score = results.filter(Boolean).length;
-  var resultEl = document.getElementById('quiz-result');
-  resultEl.classList.add('show');
-
-  document.getElementById('result-score').textContent = score;
-
-  var msgs = [
-    { min: 0, max: 3, msg: '解説をもう一度読み直して、各機能の役割をしっかり整理しましょう。' },
-    { min: 4, max: 6, msg: '基礎は押さえています。間違えた問題の解説を確認して、理解を深めましょう。' },
-    { min: 7, max: 8, msg: 'よく理解できています！残りの問題の解説も確認しておきましょう。' },
-    { min: 9, max: 10, msg: '素晴らしい！Claudeの4機能を完全に使いこなせます。実際の業務でどんどん活用しましょう！' }
-  ];
-  var found = msgs.find(function(m) { return score >= m.min && score <= m.max; });
-  document.getElementById('result-msg').textContent = found ? found.msg : '';
-
-  // Category bars (group questions by feature)
-  var cats = [
-    { name: 'Project', qs: [0, 5] },
-    { name: 'Artifacts', qs: [1, 6] },
-    { name: 'Cowork', qs: [2, 4, 8] },
-    { name: 'Claude Code', qs: [3, 7] },
-    { name: '総合判断', qs: [9] }
-  ];
-  var barsHtml = '';
-  cats.forEach(function(cat) {
-    var correct = cat.qs.filter(function(q) { return results[q] === true; }).length;
-    var total = cat.qs.length;
-    var pct = Math.round((correct / total) * 100);
-    barsHtml += '<div class="result-bar-item"><span>' + cat.name + '</span><div class="result-bar-track"><div class="result-bar-fill" style="width:0%" data-pct="' + pct + '"></div></div><span>' + correct + '/' + total + '</span></div>';
-  });
-  document.getElementById('result-bars').innerHTML = barsHtml;
-
-  setTimeout(function() {
-    document.querySelectorAll('.result-bar-fill').forEach(function(el) {
-      el.style.width = el.dataset.pct + '%';
-    });
-  }, 100);
-
-  resultEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
-
-function retryQuiz() {
-  answers = new Array(TOTAL).fill(-1);
-  results = new Array(TOTAL).fill(null);
-  currentQ = 0;
-
-  // Reset all cards
-  for (var i = 0; i < TOTAL; i++) {
-    var card = getCard(i);
-    card.classList.remove('active');
-    var opts = card.querySelectorAll('.quiz-option');
-    opts.forEach(function(o) {
-      o.disabled = false;
-      o.classList.remove('correct', 'wrong', 'reveal-correct');
-    });
-    var fb = card.querySelector('.quiz-feedback');
-    fb.classList.remove('show', 'correct-fb', 'wrong-fb');
-    document.getElementById('next-' + i).disabled = true;
-  }
-  getCard(0).classList.add('active');
-
-  document.getElementById('quiz-result').classList.remove('show');
-  document.getElementById('prog-fill').style.width = '0%';
-  document.getElementById('prog-text').textContent = '0 / 10';
-
-  document.getElementById('quiz-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-function scrollToTop() {
-  document.getElementById('overview').scrollIntoView({ behavior: 'smooth' });
-}
-
-// Attach option click handlers
-document.querySelectorAll('.quiz-card').forEach(function(card) {
-  var q = parseInt(card.dataset.q);
-  card.querySelectorAll('.quiz-option').forEach(function(opt) {
-    opt.addEventListener('click', function() {
-      if (!opt.disabled) selectOption(q, parseInt(opt.dataset.idx));
-    });
-  });
-});
 </script>
 </body>
 </html>
